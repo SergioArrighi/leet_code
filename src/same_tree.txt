@@ -22,6 +22,9 @@ impl Solution {
     // Check recursively if nodes are identical
     // Strategy to make less checks? Width first
     pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> bool {
+        // As TreeNode derives Eq => one line solution
+        // p == q
+
         let mut is_same = false;
         match (p, q) {
             (Some(ref mut p_cell), Some(ref mut q_cell)) => {

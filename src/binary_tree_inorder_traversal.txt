@@ -19,26 +19,19 @@
 use std::rc::Rc;
 use std::cell::RefCell;
 impl Solution {
-    // Depth first left right
-    // Recursive approach
-    // Some(left) => rec
-    // Parent node is added in between left and right
-    pub fn rec(mut node: Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<i32>) {
-        //println!("{:?}", node);
-        if let Some(ref mut n) = node {
-            let mut tn = n.borrow_mut();
-            //println!("{}", tn.val);
-            Self::rec(tn.left.take(), res);
-            res.push(tn.val);
-            Self::rec(tn.right.take(), res);
-        } 
-    }
-
     pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-        let mut res: Vec<i32> = vec![];
-
-        Self::rec(root, &mut res);
-        //println!("{:?}", res);
+        let mut res = vec![];
+        
+        fn traversal(node: Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<i32>) {
+            if let Some(n) = node {
+                traversal(n.borrow_mut().left.take(), res);
+                res.push(n.borrow().val);
+                traversal(n.borrow_mut().right.take(), res);
+            }
+        }
+        
+        traversal(root, &mut res);
+        
         res
     }
 }

@@ -1,0 +1,115 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+
+    pub fn rec(cell: Option<Rc<RefCell<TreeNode>>>, mut depth: i32, min_depth: &mut i32) {
+        match cell {
+            Some(cell) => {
+                let mut node = cell.borrow_mut();
+                depth += 1;
+                match (node.left.take(), node.right.take()) {
+                    (None, None) => {
+                        if depth < *min_depth {
+                            *min_depth = depth;
+                        }
+                    },
+                    (Some(left), Some(right)) => {
+                        Self::rec(Some(left), depth, min_depth);
+                        Self::rec(Some(right), depth, min_depth);
+                    },
+                    (Some(left), None) => {
+                        Self::rec(Some(left), depth, min_depth);
+                    },
+                    (None, Some(right)) => {
+                        Self::rec(Some(right), depth, min_depth);
+                    }
+                }
+            },
+            None => *min_depth = depth,
+        }
+    }
+
+    pub fn min_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        let mut min_depth = i32::MAX;
+        let mut depth = 0;
+
+        Self::rec(root, depth, &mut min_depth);
+        
+        min_depth
+    }
+}// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+
+    pub fn rec(cell: Option<Rc<RefCell<TreeNode>>>, mut depth: i32, min_depth: &mut i32) {
+        match cell {
+            Some(cell) => {
+                let mut node = cell.borrow_mut();
+                depth += 1;
+                match (node.left.take(), node.right.take()) {
+                    (None, None) => {
+                        if depth < *min_depth {
+                            *min_depth = depth;
+                        }
+                    },
+                    (Some(left), Some(right)) => {
+                        Self::rec(Some(left), depth, min_depth);
+                        Self::rec(Some(right), depth, min_depth);
+                    },
+                    (Some(left), None) => {
+                        Self::rec(Some(left), depth, min_depth);
+                    },
+                    (None, Some(right)) => {
+                        Self::rec(Some(right), depth, min_depth);
+                    }
+                }
+            },
+            None => *min_depth = depth,
+        }
+    }
+
+    pub fn min_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        let mut min_depth = i32::MAX;
+        let mut depth = 0;
+
+        Self::rec(root, depth, &mut min_depth);
+        
+        min_depth
+    }
+}
