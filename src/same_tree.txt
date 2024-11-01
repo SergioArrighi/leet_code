@@ -1,0 +1,43 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    // Check recursively if nodes are identical
+    // Strategy to make less checks? Width first
+    pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> bool {
+        let mut is_same = false;
+        match (p, q) {
+            (Some(ref mut p_cell), Some(ref mut q_cell)) => {
+                let mut p_node = p_cell.borrow_mut();
+                let mut q_node = q_cell.borrow_mut();
+                if p_node.val == q_node.val {
+                    is_same = true;
+                    is_same &= Self::is_same_tree(p_node.left.take(), q_node.left.take());
+                    is_same &= Self::is_same_tree(p_node.right.take(), q_node.right.take());
+                }
+                //println!("{:?}", p_node);
+            },
+            (None, None) => is_same = true,
+            (Some(p_cell), None) => is_same = false,
+            (None, Some(q_cell)) => is_same = false,
+        }
+        is_same
+    }
+}

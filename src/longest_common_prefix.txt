@@ -1,0 +1,45 @@
+pub fn longest_common_prefix(input: Vec<String>) -> String {
+    input.into_iter().reduce(|acc, cur|{
+        acc.chars()
+           .zip(cur.chars())
+           .take_while(|(a,c)| a== c)
+           .map(|(c,_)|c)
+           .collect()
+    }).unwrap()
+}
+/*
+My solution
+pub fn longest_common_prefix(strs: Vec<String>) -> String {
+    let shortest = strs.iter().min_by_key(|&s| s.len()).unwrap().as_bytes().to_vec();
+
+    let result = strs.iter().filter_map(|s| {
+        if s.as_bytes() != shortest {
+            Some(s.as_bytes())
+        } else {
+            None
+        }
+    }).fold(shortest.clone(), |acc, s| {
+        let mut tmp_prefix: Vec<u8> = Vec::new();
+        for (i, shortest_c) in shortest.iter().enumerate() {
+            if *shortest_c == s[i] && (acc.len() > i && *shortest_c == acc[i]) {
+                tmp_prefix.push(*shortest_c);
+            } else {
+                break;
+            }
+        }
+        tmp_prefix.min(acc)
+    });
+    String::from_utf8(result).unwrap()
+}
+*/
+
+fn main() {
+    assert_eq!(
+        longest_common_prefix(vec![
+            String::from("abaa"),
+            String::from("abc"),
+            String::from("abca")
+        ]),
+        "ab"
+    );
+}

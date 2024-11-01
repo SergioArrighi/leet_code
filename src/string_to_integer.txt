@@ -1,0 +1,54 @@
+pub fn my_atoi(s: String) -> i32 {
+    if s.is_empty() {
+        return 0;
+    }
+    let mut is_positive = true;
+    let mut iter = s.chars().skip_while(|&c| c == ' ').peekable();
+    if let Some(&sign) = iter.peek() {
+        if sign == '-' {
+            is_positive = false;
+            iter.next();
+        } else if sign == '+' {
+            iter.next();
+        } else if !sign.is_numeric() {
+            return 0;
+        }
+    }
+
+    let q = iter.peek();
+    match q {
+        Some(c) => {
+            if !c.is_numeric() {
+                return 0;
+            }
+        },
+        None => {
+            return 0;
+        },
+    }
+
+    let parsed_result =  iter
+        .take_while(|x| x.is_numeric())
+        .collect::<String>().parse::<i32>();
+
+    match parsed_result {
+        Ok(mut val) => {
+            if !is_positive {
+                val = val.checked_neg().unwrap();
+            }
+            return val;
+        },
+        Err(_) => {
+            if is_positive {
+                return i32::MAX;
+            } else {
+                return i32::MIN;
+            }
+        },
+    }
+
+}
+
+fn main() {
+    println!("Result: {}", my_atoi(String::from("+-12")));
+}

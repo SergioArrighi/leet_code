@@ -1,0 +1,14 @@
+impl Solution {
+    pub fn climb_stairs(n: i32) -> i32 {
+        let mut second_last = 0;
+        let mut last = 1;
+
+        for i in (0..n) {
+            let tmp = last + second_last;
+            second_last = last;
+            last = tmp;
+        }
+
+        last
+    }
+}

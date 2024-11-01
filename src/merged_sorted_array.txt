@@ -1,0 +1,31 @@
+impl Solution {
+    pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
+        let mut head1: usize = 0;
+        let mut head2: usize = 0;
+        // Keeps track of where the last element from nums1 ends up during the merge process
+        let mut limit = m;
+
+        if m == 0 {
+            nums1.clear();
+            nums1.append(nums2);
+            return;
+        }
+
+        while head2 < n as usize {
+            if head1 < limit as usize {
+                if nums1[head1] > nums2[head2] {
+                    nums1.insert(head1, nums2[head2]);
+                    head2 += 1;
+                    // Increased as a valid element from nums1 shifts to the right
+                    limit += 1;
+                }
+                head1 += 1;
+            } else {
+                nums1.insert(head1, nums2[head2]);
+                head1 += 1;
+                head2 += 1;
+            }
+        }
+        nums1.truncate((m + n) as usize);
+    }
+}

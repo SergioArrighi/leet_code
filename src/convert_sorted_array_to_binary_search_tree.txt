@@ -1,0 +1,40 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    // Tree -> Recursion?
+    // How to find the root in nums?
+    // Height-balanced 
+    // For nums.len() even i can use nums.len() / 2
+    pub fn sorted_array_to_bst(nums: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+        let root_val = nums.len() / 2;
+        let mut node = TreeNode::new(nums[root_val] as i32);
+        let nums_left = &nums[0..root_val].to_vec();
+        if nums_left.len() > 0 {
+            node.left = Self::sorted_array_to_bst((*nums_left).clone());
+        }
+        let nums_right = &nums[root_val + 1..nums.len()].to_vec();
+        if nums_right.len() > 0 {
+            node.right = Self::sorted_array_to_bst((*nums_right).clone());
+        }
+
+        Some(Rc::new(RefCell::new(node)))
+    }
+}

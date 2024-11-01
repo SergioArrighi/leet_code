@@ -1,0 +1,71 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    // Recursive
+    // How to traverse?
+    // First level easy => After more difficult as nodes are not siblings
+    // Two nodes at a time => n1.left.val == n2.right.val && n1.right.val == n2.left.val
+
+    pub fn rec(cell1: Option<Rc<RefCell<TreeNode>>>, cell2: Option<Rc<RefCell<TreeNode>>>) -> bool {
+        let mut is_symmetric = false;
+        match (cell1, cell2) {
+            (Some(cell1), Some(cell2)) => {
+                // Check val is same
+                let mut node1 = cell1.borrow_mut();
+                let mut node2 = cell2.borrow_mut();
+                if node1.val == node2.val {
+                    is_symmetric = true;
+                }
+
+                // call rec with n1.left, n2.right
+                // call rec with n1.right, n2.left
+                is_symmetric &= Self::rec(node1.left.take(), node2.right.take());
+                is_symmetric &= Self::rec(node1.right.take(), node2.left.take());
+            }
+            (None, None) => is_symmetric = true,
+            _ => is_symmetric = false,
+        }
+        is_symmetric
+    }
+
+    pub fn is_symmetric(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+        let mut is_symmetric = false;
+        match root {
+            Some(ref root_cell) => {
+                let mut root_node = root_cell.borrow_mut();
+                if root_node.left.is_some() && root_node.right.is_some() {
+                    let left = root_node.left.as_ref().unwrap().borrow();
+                    let right = root_node.right.as_ref().unwrap().borrow();
+                    if left.val == right.val {
+                        is_symmetric = true;
+                    }
+
+                } else if root_node.left.is_none() && root_node.right.is_none() {
+                    is_symmetric = true;
+                }
+
+                is_symmetric &= Self::rec(root_node.left.take(), root_node.right.take());
+            },
+            None => return true,
+        }
+        is_symmetric
+    }
+}

@@ -1,0 +1,38 @@
+fn is_open(c: char) -> bool {
+    c == '(' || c == '[' || c == '{'
+    //matches!(c, '(' | '[' | '{')
+}
+
+fn is_open_for(open: char, close: char) -> bool {
+    if open == '(' {
+        close == ')'
+    } else if open == '[' {
+        close == ']'
+    } else if open == '{' {
+        close == '}'
+    } else {
+        false
+    }
+}
+
+pub fn is_valid(s: String) -> bool {
+    let mut pars: Vec<char> = vec![];
+    for c in s.chars() {
+        if Self::is_open(c) {
+            pars.push(c);
+        } else {
+            if pars.len() > 0 {
+                if !Self::is_open_for(pars.pop().unwrap(), c) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+    pars.len() == 0
+}
+
+fn main() {
+    // Add call
+}

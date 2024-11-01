@@ -1,0 +1,9 @@
+impl Solution {
+    pub fn length_of_last_word(s: String) -> i32 {
+        let it = s.split_ascii_whitespace();
+        if let Some(word) = it.last() {
+            return word.len() as i32;
+        }
+        unreachable!("At least one word");
+    }
+}

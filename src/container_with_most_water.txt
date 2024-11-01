@@ -1,0 +1,27 @@
+pub fn max_area(height: Vec<i32>) -> i32 {
+    let mut ptr_left: usize = 0;
+    let mut ptr_right: usize = height.len() - 1;
+    let mut result = 0;
+    while ptr_left < ptr_right {
+        if height[ptr_left] <= height[ptr_right] {
+            let r = height[ptr_left] * (ptr_right - ptr_left) as i32;
+            if r > result {
+                result = r;
+            }
+            ptr_left += 1;
+        } else if height[ptr_right] < height[ptr_left] {
+            let r = height[ptr_right] * (ptr_right - ptr_left) as i32;
+            if r > result {
+                result = r;
+            }
+            ptr_right -= 1;
+        }
+        println!("{} - {}", ptr_left, ptr_right);
+    }
+    result
+}
+
+fn main() {
+    let v = vec![1, 8, 6, 2, 5, 4, 8, 3, 7];
+    println!("Result: {}", max_area(v));
+}

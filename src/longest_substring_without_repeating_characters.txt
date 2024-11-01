@@ -1,0 +1,32 @@
+pub fn length_of_longest_substring(s: String) -> i32 {
+    if s.len() == 0 {
+        return 0;
+    }
+
+    let mut chars = String::default();
+    let mut lengths: Vec<i32> = vec![];
+
+    for (i, c) in s.chars().enumerate() {
+        if !chars.contains(c) {
+            chars.push(c);
+            if i == s.len() - 1 {
+                lengths.push(chars.len() as i32);
+            }
+        } else {
+            lengths.push(chars.len() as i32);
+            let dupe_index: usize = chars.rfind(c).unwrap() + 1;
+            chars = chars
+                .chars()
+                .skip(dupe_index)
+                .take(chars.len() - dupe_index)
+                .collect();
+            chars.push(c);
+        }
+    }
+    return *lengths.iter().max().unwrap();
+}
+
+fn main() {
+    //assert!(length_of_longest_substring(String::from("tmmzuxt")) == 5);
+    assert!(length_of_longest_substring(String::from("abcabcbb")) == 3);
+}

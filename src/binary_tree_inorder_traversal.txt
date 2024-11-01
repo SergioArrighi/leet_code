@@ -1,0 +1,44 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    // Depth first left right
+    // Recursive approach
+    // Some(left) => rec
+    // Parent node is added in between left and right
+    pub fn rec(mut node: Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<i32>) {
+        //println!("{:?}", node);
+        if let Some(ref mut n) = node {
+            let mut tn = n.borrow_mut();
+            //println!("{}", tn.val);
+            Self::rec(tn.left.take(), res);
+            res.push(tn.val);
+            Self::rec(tn.right.take(), res);
+        } 
+    }
+
+    pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut res: Vec<i32> = vec![];
+
+        Self::rec(root, &mut res);
+        //println!("{:?}", res);
+        res
+    }
+}

@@ -1,0 +1,120 @@
+pub fn roman_to_int(s: String) -> i32 {
+    let mut first_c = true;
+    let mut first_x = true;
+    let mut first_i = true;
+    let mut result = 0;
+    let mut iter = s.chars().into_iter().peekable();
+
+    while let Some(c) = iter.next() {
+        match c {
+            'M' => result += 1000,
+            'D' => result += 500,
+            'C' => {
+                if first_c {
+                    first_c = false;
+                    match iter.peek() {
+                        Some(c1) => {
+                            match c1 {
+                                'M' => {
+                                    result += 900;
+                                    iter.next();
+                                }
+                                'D' => {
+                                    result += 400;
+                                    iter.next();
+                                }
+                                _ => result += 100,
+                            }
+                        }
+                        _ => result += 100,
+                    }
+                } else {
+                    result += 100;
+                }
+            },
+            'L' => result += 50,
+            'X' => {
+                if first_x {
+                    first_x = false;
+                    match iter.peek() {
+                        Some(c1) => {
+                            match c1 {
+                                'C' => {
+                                    result += 90;
+                                    iter.next();
+                                }
+                                'L' => {
+                                    result += 40;
+                                    iter.next();
+                                }
+                                _ => result += 10,
+                            }
+                        }
+                        _ => result += 10,
+                    }
+                } else {
+                    result += 10;
+                }
+            },
+            'V' => result += 5,
+            'I' => {
+                if first_i {
+                    first_i = false;
+                    match iter.peek() {
+                        Some(c1) => {
+                            match c1 {
+                                'X' => {
+                                    result += 9;
+                                    iter.next();
+                                }
+                                'V' => {
+                                    result += 4;
+                                    iter.next();
+                                }
+                                _ => result += 1,
+                            }
+                        }
+                        _ => result += 1,
+                    }
+                } else {
+                    result += 1;
+                }
+            }
+            _ => println!("Invalid input character {}", c),
+        }
+    }
+    result
+}
+
+/*
+Brilliant solution which doesn't peek but backtracks and adds the difference
+pub fn roman_to_int(s: String) -> i32 {
+    let mut val = 0;
+    let mut prev = 0;
+    for &byte in s.as_bytes() {
+        val += match byte {
+            b'I' => 1,
+            b'V' if prev == b'I' => 3,
+            b'V' => 5,
+            b'X' if prev == b'I' => 8,
+            b'X' => 10,
+            b'L' if prev == b'X' => 30,
+            b'L' => 50,
+            b'C' if prev == b'X' => 80,
+            b'C' => 100,
+            b'D' if prev == b'C' => 300,
+            b'D' => 500,
+            b'M' if prev == b'C' => 800,
+            b'M' => 1000,
+            _ => unsafe { std::hint::unreachable_unchecked() } 
+        };
+        prev = byte;
+    }
+    val
+} */
+
+fn main() {
+    assert_eq!(roman_to_int(String::from("LVIII")), 58);
+    assert_eq!(roman_to_int(String::from("III")), 3);
+    assert_eq!(roman_to_int(String::from("MCMXCIV")), 1994);
+}

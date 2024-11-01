@@ -1,0 +1,60 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::cmp;
+impl Solution {
+    // Recursive
+    // Depth first strategy
+    // How to bubble up the depth?
+
+    pub fn rec(node_cell: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        let mut depth = 0;
+        match node_cell {
+            Some(ref cell) => {
+                // Each recursion is +1 depth
+                depth += 1;
+                let mut node = cell.borrow_mut();
+
+                match (node.left.take(), node.right.take()) {
+                    (Some(n_left), Some(n_right)) => {
+                        let left_depth = Self::rec(Some(n_left));
+                        let right_depth = Self::rec(Some(n_right));
+                        depth += cmp::max(left_depth, right_depth);
+                    },
+                    (Some(n_left), None) => {
+                        depth += Self::rec(Some(n_left));
+                    },
+                    (None, Some(n_right)) => {
+                        depth += Self::rec(Some(n_right));
+                    },
+                    (None, None) => return depth,
+                }
+            }
+            None => return depth,
+        }
+        depth
+    }
+
+    pub fn max_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        let mut depth = 0;
+        depth += Self::rec(root);
+        depth
+    }
+}

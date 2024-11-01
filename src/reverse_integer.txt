@@ -1,0 +1,21 @@
+use std::collections::VecDeque;
+
+pub fn reverse(x: i32) -> i32 {
+    //s = s.chars().rev();
+    //println!("{:?}", s.chars().rev().collect::<String>());
+    let mut d: VecDeque<char> = x.abs().to_string().chars().rev().collect::<VecDeque<_>>();
+    if x.is_negative() {
+        d.push_front('-');
+    }
+    let parsed_result =  d.iter().collect::<String>().parse::<i32>();
+
+    match parsed_result {
+        Ok(val) => return val,
+        Err(_) => return 0,
+    }
+}
+
+fn main() {
+    println!("Result: {}", reverse(1534236469));
+    //assert!(longest_palindrome(String::from("anugnxshgonmqydttcvmtsoaprxnhpmpovdolbidqiyqubirkvhwppcdyeouvgedccipsvnobrccbndzjdbgxkzdbcjsjjovnhpnbkurxqfupiprpbiwqdnwaqvjbqoaqzkqgdxkfczdkznqxvupdmnyiidqpnbvgjraszbvvztpapxmomnghfaywkzlrupvjpcvascgvstqmvuveiiixjmdofdwyvhgkydrnfuojhzulhobyhtsxmcovwmamjwljioevhafdlpjpmqstguqhrhvsdvinphejfbdvrvabthpyyphyqharjvzriosrdnwmaxtgriivdqlmugtagvsoylqfwhjpmjxcysfujdvcqovxabjdbvyvembfpahvyoybdhweikcgnzrdqlzusgoobysfmlzifwjzlazuepimhbgkrfimmemhayxeqxynewcnynmgyjcwrpqnayvxoebgyjusppfpsfeonfwnbsdonucaipoafavmlrrlplnnbsaghbawooabsjndqnvruuwvllpvvhuepmqtprgktnwxmflmmbifbbsfthbeafseqrgwnwjxkkcqgbucwusjdipxuekanzwimuizqynaxrvicyzjhulqjshtsqswehnozehmbsdmacciflcgsrlyhjukpvosptmsjfteoimtewkrivdllqiotvtrubgkfcacvgqzxjmhmmqlikrtfrurltgtcreafcgisjpvasiwmhcofqkcteudgjoqqmtucnwcocsoiqtfuoazxdayricnmwcg")).eq_ignore_ascii_case("hpyyph"));
+}

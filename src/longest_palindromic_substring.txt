@@ -1,0 +1,88 @@
+use std::collections::HashMap;
+
+fn is_palindrome(s: &str) -> bool {
+    s == s.chars().rev().collect::<String>()
+}
+
+pub fn longest_palindrome(s: String) -> String {
+    let mut result = s.chars().take(1).collect::<String>();
+    let mut positions: HashMap<char, Vec<usize>> = HashMap::default();
+
+    //for (usize)
+    for (i, c) in s.chars().rev().enumerate() {
+        let start = s.len() - 1 - i;
+        match positions.get_mut(&c) {
+            Some(ref mut indexes) => {
+                for end in indexes.iter() {
+                    let palindrome = s.chars().skip(start).take(end - start + 1).collect::<String>();
+                    println!("{}", palindrome);
+                    if is_palindrome(&palindrome) && palindrome.len() > result.len() {
+                        result = palindrome;
+                    }
+                }
+
+                indexes.push(start);
+            },
+            None => {
+                let indexes = vec![start];
+                positions.insert(c, indexes);
+            },
+        }
+    }
+
+    println!("{:?}", positions);
+
+    return result;
+}
+/*
+pub fn longest_palindrome(s: String) -> String {
+    let mut positions: HashMap<char, Vec<usize>> = HashMap::default();
+    let mut all_tuples: Vec<(usize, usize)> = vec![];
+
+    for (i, c) in s.chars().enumerate() {
+        match positions.get_mut(&c) {
+            Some(char_indexes) => {
+                char_indexes.push(i);
+            },
+            None => {
+                let v = vec![i];
+                positions.insert(c, v);
+            },
+        }
+    }
+
+    for g in positions.iter().filter(|x| x.1.len() >= 2) {
+        for start in g.1 {
+            for end in g.1.iter().skip(1) {
+                if *end > * start {
+                    all_tuples.push((*start, *end));
+                }
+            }
+        }
+    }
+
+    all_tuples.sort_by(|a, b| {
+        let diff_a = a.0.abs_diff(a.1);
+        let diff_b = b.0.abs_diff(b.1);
+        diff_b.cmp(&diff_a)
+    });
+
+    println!("{:?}", all_tuples);
+    
+    for t in all_tuples {
+        println!("{} - {}", t.0, t.1);
+        let ss: String = s.chars().skip(t.0).take(t.1 - t.0 + 1).collect::<String>();
+        println!("{}", ss);
+        if ss == ss.chars().rev().collect::<String>() {
+            return ss;
+        }
+    }
+
+    return s.chars().take(1).collect::<String>();
+}
+*/
+
+fn main() {
+   println!("Result: {}", longest_palindrome(String::from("xaabacxcabaaxcabaax")));
+    //assert!(longest_palindrome(String::from("anugnxshgonmqydttcvmtsoaprxnhpmpovdolbidqiyqubirkvhwppcdyeouvgedccipsvnobrccbndzjdbgxkzdbcjsjjovnhpnbkurxqfupiprpbiwqdnwaqvjbqoaqzkqgdxkfczdkznqxvupdmnyiidqpnbvgjraszbvvztpapxmomnghfaywkzlrupvjpcvascgvstqmvuveiiixjmdofdwyvhgkydrnfuojhzulhobyhtsxmcovwmamjwljioevhafdlpjpmqstguqhrhvsdvinphejfbdvrvabthpyyphyqharjvzriosrdnwmaxtgriivdqlmugtagvsoylqfwhjpmjxcysfujdvcqovxabjdbvyvembfpahvyoybdhweikcgnzrdqlzusgoobysfmlzifwjzlazuepimhbgkrfimmemhayxeqxynewcnynmgyjcwrpqnayvxoebgyjusppfpsfeonfwnbsdonucaipoafavmlrrlplnnbsaghbawooabsjndqnvruuwvllpvvhuepmqtprgktnwxmflmmbifbbsfthbeafseqrgwnwjxkkcqgbucwusjdipxuekanzwimuizqynaxrvicyzjhulqjshtsqswehnozehmbsdmacciflcgsrlyhjukpvosptmsjfteoimtewkrivdllqiotvtrubgkfcacvgqzxjmhmmqlikrtfrurltgtcreafcgisjpvasiwmhcofqkcteudgjoqqmtucnwcocsoiqtfuoazxdayricnmwcg")).eq_ignore_ascii_case("hpyyph"));
+}

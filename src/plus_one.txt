@@ -1,0 +1,22 @@
+impl Solution {
+    pub fn plus_one(digits: Vec<i32>) -> Vec<i32> {
+        let mut m_digits = digits.clone();
+        let mut carriage = false;
+        let mut head = m_digits.len() - 1;
+        loop {
+            m_digits[head] = m_digits[head] + 1;
+            if m_digits[head] >= 10 {
+                m_digits[head] = m_digits[head] % 10;
+                if head > 0 {
+                    head -= 1;
+                } else {
+                    m_digits.insert(0, 1);
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        m_digits
+    }
+}

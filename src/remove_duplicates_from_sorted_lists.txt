@@ -1,0 +1,50 @@
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+// 
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+impl Solution {
+    // Recursive
+    // need to keep head to return
+    // if current.val == current.next.val => current.next = current.next.next
+    // else just advance current
+    // Recursive helper function
+    // Recursive helper function
+    fn rec(mut current: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
+        // Skip all nodes with the same value by mutating the next pointer directly
+        while let Some(ref mut node) = current {
+            if node.val == val {
+                current = node.next.take();
+            } else {
+                break;
+            }
+        }
+
+        // If current is not None, recurse with the next node
+        if let Some(mut node) = current {
+            node.next = Self::rec(node.next.take(), node.val);
+            Some(node)
+        } else {
+            None
+        }
+    }
+
+    // Main function to delete duplicates from the list
+    pub fn delete_duplicates(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        if let Some(ref mut node) = head {
+            node.next = Self::rec(node.next.take(), node.val);
+        }
+        head
+    }
+}

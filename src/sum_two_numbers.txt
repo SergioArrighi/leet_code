@@ -1,0 +1,77 @@
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+}
+
+pub fn nums_to_list(nums: &mut Vec<i32>) -> Option<Box<ListNode>> {
+    if nums.len() > 0 {
+        let mut node = ListNode::new(nums[0]);
+        if nums.len() > 1 {
+            node.next = nums_to_list(&mut nums[1..].to_vec());
+        }
+        return Some(Box::new(node));
+    }
+    
+    return None;
+}
+
+pub fn add_two_numbers(
+    l1: Option<Box<ListNode>>,
+    l2: Option<Box<ListNode>>,
+) -> Option<Box<ListNode>> {
+    let mut l1 = l1.as_ref();
+    let mut l2 = l2.as_ref();
+
+    let mut carry: i32 = 0;
+    let mut nums: Vec<i32> = vec![];
+
+    while l1.is_some() || l2.is_some() || carry > 0 {
+        let n1: i32 = if let Some(node) = l1.as_mut() {
+            let val = node.val;
+            l1 = node.next.as_ref();
+            val
+        } else {
+            0
+        };
+
+        let n2 = if let Some(node) = l2.as_mut() {
+            let val = node.val;
+            l2 = node.next.as_ref();
+            val
+        } else {
+            0
+        };
+
+        let sum = n1 + n2 + carry;
+        let new_val: i32 = sum % 10;
+        carry = sum / 10;
+
+        nums.push(new_val);
+    }
+
+    return nums_to_list(&mut nums);
+}
+
+fn main() {
+    let l11 = ListNode::new(3);
+    let mut l12 = ListNode::new(4);
+    let mut l13 = ListNode::new(2);
+    l12.next = Some(Box::new(l11));
+    l13.next = Some(Box::new(l12));
+
+    let l21 = ListNode::new(4);
+    let mut l22 = ListNode::new(6);
+    let mut l23 = ListNode::new(5);
+    l22.next = Some(Box::new(l21));
+    l23.next = Some(Box::new(l22));
+
+    add_two_numbers(Some(Box::new(l13)), Some(Box::new(l23)));
+}

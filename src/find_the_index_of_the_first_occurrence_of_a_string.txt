@@ -1,0 +1,9 @@
+impl Solution {
+    pub fn str_str(haystack: String, needle: String) -> i32 {
+        let res = haystack.find(&needle);
+        match res {
+            Some(index) => index as i32,
+            None => -1,
+        }
+    }
+}

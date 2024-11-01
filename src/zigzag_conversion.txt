@@ -1,0 +1,154 @@
+pub fn convert(s: String, num_rows: i32) -> String {
+    let mut zigzags: Vec<_> = (0..num_rows)
+        .chain((1..num_rows-1).rev())
+        .cycle()
+        .zip(s.chars())
+        .collect();
+    zigzags.sort_by_key(|&(row, _)| row);
+    zigzags.into_iter()
+        .map(|(_, c)| c)
+        .collect()
+}
+/*
+Solution 2
+pub fn convert(s: String, num_rows: i32) -> String {
+    let cols_per = num_rows - 1;
+    let chars_per = num_rows + cols_per -1;
+    let periods = s.len() as i32 / chars_per;
+    let rem_chars = s.len() as i32 - (chars_per * periods);
+    let mut num_cols = periods * cols_per;
+    if rem_chars <= num_rows {
+        num_cols += 1;
+    } else {
+        num_cols += rem_chars - num_rows + 1;
+    }
+
+    println!("Colums per period: {}", cols_per);
+    println!("Chars per period: {}", chars_per);
+    println!("Complete periods: {}", periods);
+    println!("Remaining chars: {}", rem_chars);
+    println!("Num columns: {}", num_cols);
+
+    let mut chars_map: Vec<Vec<char>> = vec![vec![' '; num_cols as usize]; num_rows as usize];
+
+    let mut partial_cols = 0;
+    for (i, c) in s.chars().enumerate() {
+        // For each character, determine x/y coordinates
+        let current_period = i as i32 / chars_per;
+        let mut x = 0;
+        let mut y = 0;
+
+
+        let remaining_chars = i as i32 % chars_per;
+        if remaining_chars < num_rows {
+            x = current_period * cols_per;
+            //y = y % num_rows;
+            y = (i as i32 + num_rows - partial_cols) % num_rows;
+        } else {
+            let h = remaining_chars - num_rows + 1;
+            x = current_period * cols_per + (remaining_chars - num_rows + 1);
+            y = num_rows - 1 - h;
+            partial_cols += 1;
+        }
+
+        chars_map[y as usize][x as usize] = c;
+
+
+        //let period_x = ((i as i32 / chars_period) * columns_period) + (i as i32 % columns_period);
+        println!("c: {}, i: {}, x: {}, y: {}", c, i, x, y);
+    }
+
+    let mut result = String::default();
+    for char_line in chars_map.iter() {
+        println!("{:?}", char_line);
+        for c in char_line {
+            if *c != ' ' {
+                result.push(*c);
+            }
+        }
+    }
+    println!("{:?}", result);
+
+    return result;
+}
+*/
+
+/*
+Solution 1
+
+pub fn convert(s: String, num_rows: i32) -> String {
+    let mut zig_zag_map: Vec<Vec<char>> = vec![];
+    let mut head = 0;
+    let mut column_count = 0;
+    let n = s.len();
+    let period = num_rows - 1;
+
+    /*
+    println!("N {}", n);
+    println!("Period {}", period);
+    println!("============");
+     */
+
+    while head < n {
+        //println!("Head: {}", head);
+        //println!("Column {}", column_count);
+        let reminder = column_count % period;
+        //println!("Reminder {}", reminder);
+        let mut column: Vec<char> = vec![];
+        if reminder == 0 {
+            for _ in 0..num_rows {
+                //println!("i {:?}", i);
+                match s.chars().nth(head) {
+                    Some(c) => { column.push(c) },
+                    None => { column.push(' ') },
+                }
+                head += 1;
+            }
+            //println!("Col: {:?}", column);
+        } else {
+            for i in 0..num_rows {
+                //println!("i {:?}", i);
+                if i == reminder {
+                    column.push(s.chars().nth(head).unwrap());
+                    head += 1;
+                } else {
+                    column.push(' ');
+                }
+            }
+            column.reverse();
+            //println!("Col: {:?}", column);
+        }
+        zig_zag_map.push(column);
+        column_count += 1;
+        //println!("============");
+    }
+
+    let mut result = String::default();
+    for i in 0..num_rows {
+        for j in 0..zig_zag_map.len() {
+            match zig_zag_map.get(j) {
+                Some(col) => {
+                    //println!("{:?}", col);
+                    match col.get(i as usize) {
+                        Some(c) => {
+                            println!("{}", c);
+                            if *c != ' ' {
+                                result.push(*c);
+                            }
+                        },
+                        None => todo!(),
+                    }
+                },
+                None => todo!(),
+            }
+        }
+    }
+
+    result
+}
+*/
+
+fn main() {
+    println!("Result: {}", convert(String::from("PAYPALISHIRING"), 4));
+    //assert!(longest_palindrome(String::from("anugnxshgonmqydttcvmtsoaprxnhpmpovdolbidqiyqubirkvhwppcdyeouvgedccipsvnobrccbndzjdbgxkzdbcjsjjovnhpnbkurxqfupiprpbiwqdnwaqvjbqoaqzkqgdxkfczdkznqxvupdmnyiidqpnbvgjraszbvvztpapxmomnghfaywkzlrupvjpcvascgvstqmvuveiiixjmdofdwyvhgkydrnfuojhzulhobyhtsxmcovwmamjwljioevhafdlpjpmqstguqhrhvsdvinphejfbdvrvabthpyyphyqharjvzriosrdnwmaxtgriivdqlmugtagvsoylqfwhjpmjxcysfujdvcqovxabjdbvyvembfpahvyoybdhweikcgnzrdqlzusgoobysfmlzifwjzlazuepimhbgkrfimmemhayxeqxynewcnynmgyjcwrpqnayvxoebgyjusppfpsfeonfwnbsdonucaipoafavmlrrlplnnbsaghbawooabsjndqnvruuwvllpvvhuepmqtprgktnwxmflmmbifbbsfthbeafseqrgwnwjxkkcqgbucwusjdipxuekanzwimuizqynaxrvicyzjhulqjshtsqswehnozehmbsdmacciflcgsrlyhjukpvosptmsjfteoimtewkrivdllqiotvtrubgkfcacvgqzxjmhmmqlikrtfrurltgtcreafcgisjpvasiwmhcofqkcteudgjoqqmtucnwcocsoiqtfuoazxdayricnmwcg")).eq_ignore_ascii_case("hpyyph"));
+}
