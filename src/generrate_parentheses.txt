@@ -1,0 +1,45 @@
+impl Solution {
+    // n = 1 -> ()
+    // Idea 1 -> Represent as a tree
+    // n = 2 -> (()), ()()
+
+    // Rules
+    // If m = n => only closed
+    // If p = 0 & m < n => Only open
+    // If p > 0 & m < n => Open and close
+    pub fn generate_parenthesis(n: i32) -> Vec<String> {
+        // Tree
+        // Depth first
+        let mut tree: Vec<String> = vec![];
+
+        fn rec(tree: &mut Vec<String>, mut perm: String, n: i32, mut m: i32, mut p: i32) {
+            if m == n && p == 0 {
+                // leaf
+                tree.push(perm);
+            } else if m == n {
+                // Close all
+                perm.push(')');
+                p -= 1;
+                rec(tree, perm, n, m, p);
+            } else if p > 0 {
+                // Both
+                let mut perm_left = perm.clone();
+                perm_left.push('(');
+                rec(tree, perm_left, n, m + 1, p + 1);
+                let mut perm_right = perm.clone();
+                perm_right.push(')');
+                rec(tree, perm_right, n, m, p - 1);
+            } else if p == 0 {
+                perm.push('(');
+                rec(tree, perm, n, m + 1, p + 1);
+            }
+        }
+
+        if n == 0 {
+            return tree;
+        } else {
+            rec(&mut tree, String::from("("), n, 1, 1);
+        }
+        tree
+    }
+}

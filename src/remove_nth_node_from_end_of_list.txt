@@ -1,0 +1,49 @@
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+// 
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+impl Solution {
+    // Remove n-th node from the end
+    // Backtracking
+    // 1-2-3-4-5
+    // Array of refs to list elements
+    // Access (n - 1)th element of array
+    // Set next to n+1;
+    // Possible corner case => n = size of the list => removing the last element => [1, 2] n =1
+    //                      => n = 1
+    // n is not 0 based
+    pub fn remove_nth_from_end(mut head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
+        let mut nodes_list: Vec<*const ListNode> = vec![];
+        let mut current = head.as_ref();
+        while let Some(node) = current {
+            nodes_list.push(node.as_ref());
+            current = node.next.as_ref();
+        }
+        let len = nodes_list.len();
+        let target = len.saturating_sub(n as usize);
+
+        if target == 0 {
+            if let Some(new_head) = head {
+                return new_head.next;
+            } else {
+                panic!("Error");
+            }
+        } else {
+            let cut_point = unsafe { &mut *(nodes_list[target - 1] as *mut ListNode) };
+            cut_point.next = cut_point.next.take().and_then(|n| n.next);
+        }
+        head
+    }
+}
