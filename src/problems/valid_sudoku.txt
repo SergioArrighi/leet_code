@@ -1,0 +1,44 @@
+impl Solution {
+    // Dynamic programming
+    // Divide and conquer
+    // If all 3x3 sub-matrixes are valid => board is valid
+    // Small case 3x3
+    // 0 <= k < 3 
+    // 0 <= w < 3 <- chop main board
+    // 0 <= i < 3
+    // 0 <= j < 3
+    // c[i,j]:
+    // 1) r[i] doesn't contain c[i,j]
+    // 2) c[j] doesn't contain c[i,j]
+    // aggregate c[i,j] in a list and if dupe return false <- Checks validity of 3x3
+    pub fn is_valid_sudoku(board: Vec<Vec<char>>) -> bool {  
+        let mut columns = vec![vec!['.'; 9]; 9];
+        for i in 0..9 {
+            for j in 0..9 {
+                columns[j][i] = board[i][j];
+            }
+        }
+        
+        for k in 0..3 {
+            for w in 0..3 {
+                let mut list_3x3: Vec<char> = vec![];
+                for i in 0..3 {
+                    for j in 0..3 {
+                        let row = i + k * 3;
+                        let column = j + w * 3;
+                        let cell = board[row][column];
+                        if cell != '.' {
+                            if list_3x3.contains(&cell) || 
+                                board[row].iter().filter(|x| **x == cell).count() > 1 ||
+                                columns[column].iter().filter(|x| **x==cell).count() > 1  {
+                                return false;
+                            }
+                            list_3x3.push(cell);
+                        }
+                    }
+                }
+            }
+        }
+        true
+    }
+}

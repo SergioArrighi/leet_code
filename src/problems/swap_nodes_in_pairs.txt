@@ -1,0 +1,33 @@
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+// 
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+impl Solution {
+    pub fn swap_pairs(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        match head {
+            Some(mut current_node) => {
+                match current_node.next {
+                    Some(mut next_node) => {
+                        current_node.next = Self::swap_pairs(next_node.next);
+                        next_node.next = Some(current_node);
+                        Some(next_node)
+                    },
+                    _ => Some(current_node),
+                }
+            },
+            _ => head,
+        }
+    }
+}

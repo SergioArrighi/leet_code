@@ -1,0 +1,58 @@
+impl Solution {
+    // 1)
+    // Find partition point
+    // First number smaller than the previous one
+    // What about duplicated numbers?
+
+    // 2)
+    // Rotate (assume left) at partition point
+    // restoring ordering
+
+    // 3)
+    // Binary search to find target index
+    
+    // 4)
+    // Adjust index to factor rotation
+    // 4.1)
+    // Compute remaining as nums.len() - partition point
+    // 4.2)
+    // if search index is less than remaining => old index = index + p
+    // else if index is greater or equal than remaining => old index = index - r
+    
+    // Corner cases:
+    // 1) nums.len() = 1 -> nums[0] == target
+    // 2) nums.len() = 0 -> -1
+    pub fn search(mut nums: Vec<i32>, target: i32) -> i32 {
+        if nums.len() == 0 {
+            return -1;
+        }
+        if nums.len() == 1 {
+            if nums[0] == target {
+                return 0;
+            }
+            return -1;
+        }
+
+        let mut p = 1;
+        while p < nums.len() && nums[p] > nums[p - 1] {
+            p += 1;
+        }
+
+        nums.rotate_left(p);
+
+        let search_res = nums.binary_search(&target);
+        match search_res {
+            Ok(target_index) => {
+                let r = nums.len() - p;
+                if target_index < r {
+                    return (target_index + p) as i32;
+                } else if target_index >= r {
+                    return (target_index - r) as i32;
+                }
+
+            },
+            Err(_) => return -1,
+        } 
+        -1
+    }
+}
