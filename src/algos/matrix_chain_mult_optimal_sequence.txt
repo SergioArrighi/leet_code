@@ -7,7 +7,6 @@ fn matrix_chain_order(dims: &[usize]) -> (usize, String) {
     for length in 2..=n {
         for i in 0..=n - length {
             let j = i + length - 1;
-            println!("l {length} - i {i} - j {j}");
             dp[i][j] = usize::MAX;
             for k in i..j {
                 let cost = dp[i][k] + dp[k + 1][j] + dims[i] * dims[k + 1] * dims[j + 1];

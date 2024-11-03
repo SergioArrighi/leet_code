@@ -1,0 +1,38 @@
+fn heapify(arr: &mut [i32], n: usize, i: usize) {
+    let mut largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    // Check if the left child is larger than the root
+    if left < n && arr[left] > arr[largest] {
+        println!("Left");
+        largest = left;
+    }
+
+    // Check if the right child is larger than the largest so far
+    if right < n && arr[right] > arr[largest] {
+        println!("Right");
+        largest = right;
+    }
+
+    // If the largest element is not the root, swap and recursively heapify
+    println!("{i} - {left} - {right} - {largest}");
+    if largest != i {
+        arr.swap(i, largest);
+        println!("{:?}", arr);
+        heapify(arr, n, largest);
+    }
+}
+
+fn main() {
+    let mut arr = [3, 19, 1, 14, 8, 7];
+    let n = arr.len();
+
+    // Convert array to max-heap by applying heapify from the last non-leaf node down to the root
+    for i in (0..n / 2).rev() {
+        println!("i - {i} - n - {n}");
+        heapify(&mut arr, n, i);
+    }
+
+    println!("Max-Heap: {:?}", arr);
+}
