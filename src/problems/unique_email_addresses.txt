@@ -1,0 +1,11 @@
+impl Solution {
+    pub fn num_unique_emails(emails: Vec<String>) -> i32 {
+        let mut unique_emails = std::collections::HashSet::new();
+        for email in emails {
+            let (local_name, domain_name) = email.split_once('@').unwrap();
+            let mut local_name = local_name.split("+").take(1).next().unwrap().replace(".", "");
+            unique_emails.insert(format!("{}@{}", local_name, domain_name));
+        }
+        unique_emails.len() as i32
+    }
+}

@@ -1,0 +1,41 @@
+impl Solution {
+
+    // Smallest recursion depth = target - min(candidates)
+    pub fn combination_sum(candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut solutions: Vec<Vec<i32>> = Vec::new();
+        let mut solution: Vec<i32> = Vec::new();
+
+        fn backtrack(
+            candidates: &[i32],
+            target: i32,
+            solutions: &mut Vec<Vec<i32>>,
+            solution: &mut Vec<i32>,
+            start: usize,
+        ) {
+            if target == 0 {
+                println!("Solution found {:?}", solution);
+                solutions.push(solution.clone());
+                return;
+            }
+
+            for i in start..candidates.len() {
+                if candidates[i] > target {
+                    println!("{} is bigger than target {}", candidates[i], target);
+                    break;
+                }
+
+                solution.push(candidates[i]);
+                println!("Added element to solution: {:?}", solution);
+                backtrack(candidates, target - candidates[i], solutions, solution, i);
+
+                solution.pop();
+                println!("Solution backtrack: {:?}", solution);
+            }
+        }
+
+        backtrack(&candidates, target, &mut solutions, &mut solution, 0);
+        
+        solutions
+    }
+
+}

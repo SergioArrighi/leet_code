@@ -1,0 +1,48 @@
+impl Solution {
+    // Backtracking
+    // There shouldn't be any advance logic to exclude combinations
+
+    // Define DS for full solution and currently explored solution
+    // Define backtrack function
+    // Call backtrack for the first time
+    // Return solutions
+
+    // Backtrack termination condition
+    // |solution| = |nums|
+
+    // There could be additional complexity to avoid duplicated permutations -> Maybe not as nums are unique -> Second iteration
+    pub fn permute(nums: Vec<i32>) -> Vec<Vec<i32>> {
+        let mut solutions: Vec<Vec<i32>> = Vec::new();
+        let mut solution: Vec<i32> = Vec::new();
+        let mut used: Vec<bool> = vec![false; nums.len()];
+
+        fn backtrack(nums: &Vec<i32>, used: &mut Vec<bool>, solutions: &mut Vec<Vec<i32>>, solution: &mut Vec<i32>) {
+            // Termination
+            // Add solution
+            if solution.len() == nums.len() {
+                solutions.push(solution.clone());
+                return;
+            }
+
+            // Iterate on input
+            // Perform the backtracking
+            for i in 0..nums.len() {
+                // Add i-th element to the solution
+                if used[i] {
+                    continue;
+                }
+                used[i] = true;
+                solution.push(nums[i]);
+                // Next level
+                backtrack(nums, used, solutions, solution);
+                // Remove i-th element from the solution
+                used[i] = false;
+                solution.pop();
+            }
+        }
+
+        backtrack(&nums, &mut used, &mut solutions, &mut solution);
+
+        solutions 
+    }
+}

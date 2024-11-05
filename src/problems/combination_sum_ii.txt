@@ -1,0 +1,45 @@
+impl Solution {
+    // Backtracking approach
+    // Defining solutions data structure and a single one for the solution being explored
+    // Somehow keep track of the candidates which have already been used
+    // While backtracking, decrease target by current candidate and feed it as new target
+    // Termination -> target = 0
+    pub fn combination_sum2(mut candidates: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut solutions: Vec<Vec<i32>> = Vec::new();
+        let mut solution: Vec<i32> = Vec::new();
+        candidates.sort();
+
+        fn backtrack(
+            candidates: &Vec<i32>,
+            solutions: &mut Vec<Vec<i32>>,
+            solution: &mut Vec<i32>,
+            target: i32,
+            start: usize
+        ) {
+            if target == 0 {
+                solutions.push(solution.clone());
+                return;
+            }
+
+            for i in start..candidates.len() {
+                if target < candidates[i] {
+                    return;
+                }
+
+                // continue if used
+                // or
+                // if equals to candidates[i - 1] and candidates[i - 1] has already been used
+                if i > start && candidates[i] == candidates[i-1] {
+                    continue; // Skip duplicates
+                }
+                solution.push(candidates[i]);
+                backtrack(candidates, solutions, solution, target - candidates[i], i + 1);
+                solution.pop();
+            }
+        }
+
+        backtrack(&candidates, &mut solutions, &mut solution, target, 0);
+
+        solutions
+    }
+}

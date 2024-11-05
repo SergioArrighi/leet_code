@@ -1,0 +1,45 @@
+impl Solution {
+    // Backtracking
+    // Define a shared solutions varriable
+    // Define a shared solution variable for the currently explored sequence
+    // Termination => |solution| = |nums|
+    // Complexity depends on the number of unique digits in nums
+    // Remove currrent element from nums for next recursion
+    pub fn permute_unique(nums: Vec<i32>) -> Vec<Vec<i32>> {
+        let mut solutions: Vec<Vec<i32>> = Vec::new();
+        let mut solution: Vec<i32> = Vec::new();
+        let mut nums = nums;
+        nums.sort();
+        let len = nums.len();
+
+        fn backtrack(
+            nums: &Vec<i32>,
+            used: &mut Vec<bool>,
+            solutions: &mut Vec<Vec<i32>>,
+            solution: &mut Vec<i32>,
+            len: usize
+        ) {
+            if solution.len() == len {
+                solutions.push((*solution).clone());
+                return;
+            }
+            for i in 0..nums.len() {
+                if used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                    continue;
+                }
+
+                used[i] = true;
+                solution.push(nums[i]);
+                backtrack(nums, used, solutions, solution, len);
+
+                used[i] = false;
+                solution.pop();
+            }
+        }
+
+        let mut used = vec![false; len];
+        backtrack(&nums, &mut used, &mut solutions, &mut solution, len);
+
+        solutions
+    }
+}

@@ -1,0 +1,46 @@
+use  std::collections::HashMap;
+
+impl Solution {
+    pub fn letter_combinations(digits: String) -> Vec<String> {
+        let mut solutions = Vec::new();
+        let mut solution = String::new();
+        let mut keys = HashMap::new();
+        keys.insert('2', vec!['a', 'b', 'c']);
+        keys.insert('3', vec!['d', 'e', 'f']);
+        keys.insert('4', vec!['g', 'h', 'i']);
+        keys.insert('5', vec!['j', 'k', 'l']);
+        keys.insert('6', vec!['m', 'n', 'o']);
+        keys.insert('7', vec!['p', 'q', 'r', 's']);
+        keys.insert('8', vec!['t', 'u', 'v']);
+        keys.insert('9', vec!['w', 'x', 'y', 'z']);
+
+        fn backtrack(
+            digits: &str,
+            keys: &HashMap<char, Vec<char>>,
+            solutions: &mut Vec<String>,
+            solution: &mut String,
+            index: usize,
+        ) {
+
+            if index == digits.len() {
+                solutions.push(solution.to_string());
+                return;
+            }
+
+            let digit = digits.chars().nth(index).unwrap();
+
+            let ks = keys.get(&digit).unwrap();
+            for k in ks.iter() {
+                solution.push(*k);
+                backtrack(&digits, keys, solutions, solution, index + 1);
+                solution.pop();
+            }
+        }
+
+        if digits.len() > 0 {
+            backtrack(&digits, &keys, &mut solutions, &mut solution, 0);
+        }
+
+        solutions
+    }
+}

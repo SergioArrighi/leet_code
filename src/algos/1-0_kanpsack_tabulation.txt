@@ -1,0 +1,29 @@
+fn knapsack(values: &[i32], weights: &[i32], capacity: usize) -> i32 {
+    let n = values.len();
+    let mut dp = vec![vec![0; capacity + 1]; n + 1];
+
+    // Build the dp table in a bottom-up manner
+    for i in 1..=n {
+        for w in 0..=capacity {
+            if weights[i - 1] as usize <= w {
+                dp[i][w] = dp[i - 1][w].max(dp[i - 1][w - weights[i - 1] as usize] + values[i - 1]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+
+            println!("dp[{}][{}] = {}", i, w, dp[i][w]);
+        }
+    }
+
+    // The maximum value for the given capacity is in dp[n][capacity]
+    dp[n][capacity]
+}
+
+fn main() {
+    let values = vec![6, 10, 12];
+    let weights = vec![1, 2, 3];
+    let capacity = 5;
+    
+    let max_value = knapsack(&values, &weights, capacity);
+    println!("Maximum value achievable: {}", max_value);
+}
