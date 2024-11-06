@@ -1,0 +1,33 @@
+impl Solution {
+    /*
+        O(m x n)
+        - Visit all the rows
+        - If row contains at least a 0 => zero it (To be done in one pass)
+        - Zero the columns
+    */
+
+    pub fn set_zeroes(matrix: &mut Vec<Vec<i32>>) {
+        use std::collections::HashSet;
+        let mut z_rows: HashSet<usize> = HashSet::new();
+        let mut z_cols: HashSet<usize> = HashSet::new();
+
+        for i in 0..matrix.len() {
+            for j in 0..matrix[i].len() {
+                if matrix[i][j] == 0 {
+                    z_rows.insert(i);
+                    z_cols.insert(j);
+                }
+            }
+        }
+
+        for r in z_rows {
+            matrix[r] = vec![0; matrix[r].len()];
+        }
+
+        for c in z_cols {
+            for r in 0..matrix.len() {
+                matrix[r][c] = 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+impl Solution {
+    /*
+        Non overlapping
+        Intervals is sorted  
+        1) Push new interval in intervals
+        2) Sort intervals
+        3) Merge intervals
+        New datastructure for result
+    */
+    pub fn insert(mut intervals: Vec<Vec<i32>>, mut new_interval: Vec<i32>) -> Vec<Vec<i32>> {
+        let (mut result, mut curr): (Vec<Vec<i32>>, Vec<i32>) = (Vec::new(), Vec::new());
+        intervals.push(new_interval);
+        intervals.sort();
+
+        for interval in intervals {
+            if curr.is_empty() {
+                curr = interval;
+            } else {
+                if curr[1] >= interval[0] {
+                    curr[1] = curr[1].max(interval[1]);
+                } else {
+                    result.push(curr);
+                    curr = interval;
+                }
+            }
+        }
+        result.push(curr);
+        result 
+    }
+}
