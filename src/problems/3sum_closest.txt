@@ -1,17 +1,15 @@
 impl Solution {
     pub fn three_sum_closest(mut nums: Vec<i32>, target: i32) -> i32 {
         let mut result = i32::MAX;
-        let mut dist = i32::MAX;
         nums.sort();
 
-        for low in 0..nums.len() - 2 {
+        for low in 0..nums.len() {
             let (mut mid, mut high): (usize, usize) = (low + 1, nums.len() - 1);
 
             while (mid < high) {
                 let sum = nums[low] + nums[mid] + nums[high];
                 let sum_dist = (sum - target).abs();
-                if sum_dist < dist {
-                    dist = (sum - target).abs();
+                if sum_dist < (result - target).abs() {
                     result = sum;
                 }
                 if (sum < target) { 

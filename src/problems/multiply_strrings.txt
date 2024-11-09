@@ -1,0 +1,33 @@
+impl Solution {
+    pub fn multiply(num1: String, num2: String) -> String {
+        if num1 == "0" || num2 == "0" { return String::from("0"); }
+
+        let mut result: Vec<u8> = vec![0; num1.len() + num2.len()];
+
+        let mut ext_carry: u8 = 0;
+        let mut int_carry: u8 = 0;
+        for (i, c2) in num2.chars().rev().enumerate() {
+            let n2: u8 = c2.to_digit(10).unwrap() as u8;
+            for (j, c1) in num1.chars().rev().enumerate() {
+                let n1: u8 = c1.to_digit(10).unwrap() as u8;
+                let n2_n1_c = n2 * n1 + ext_carry;
+                ext_carry = n2_n1_c / 10;
+                let rem = n2_n1_c % 10;
+                let part_result = result[i + j] + rem + int_carry;
+                if part_result >= 10 {
+                    int_carry = 1;
+                    result[i + j] = part_result % 10;
+                } else {
+                    int_carry = 0;
+                    result[i + j] = part_result;
+                }
+            }
+            result[i + num1.len()] = result[i + num1.len()] + ext_carry + int_carry;
+            ext_carry = 0;
+            int_carry = 0;
+        }
+        
+        result.reverse();
+        result.iter().map(ToString::to_string).collect::<String>().trim_start_matches("0").to_string()
+    }
+}

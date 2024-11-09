@@ -1,0 +1,6 @@
+impl Solution {
+    pub fn find_complement(mut num: i32) -> i32 {
+        let shift = num.leading_zeros();
+        !num << shift >> shift
+    }
+}   

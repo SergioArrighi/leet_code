@@ -1,0 +1,48 @@
+impl Solution {
+    pub fn four_sum(mut nums: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut solutions: Vec<Vec<i32>> = Vec::new();
+        nums.sort();
+        let target = target as i64;
+
+        if nums.len() < 4 {
+            return Vec::new();
+        }
+
+        for low in 0..nums.len() - 3 {
+            if low > 0 && nums[low] == nums[low - 1] {
+                continue;
+            }
+
+            for mid_low in low + 1..nums.len() - 2 {
+                if mid_low > low + 1 && nums[mid_low] == nums[mid_low - 1] {
+                    continue;
+                }
+
+                let (mut mid_high, mut high) = (mid_low + 1, nums.len() - 1);
+
+                while mid_high < high {
+                    let sum= nums[low] as i64 + nums[mid_low] as i64 + nums[mid_high] as i64 + nums[high] as i64;
+                    if sum == target {
+                        solutions.push(vec![nums[low], nums[mid_low], nums[mid_high], nums[high]]);
+
+                        // Move `mid_high` and `high` to skip over duplicates after finding a valid quadruplet
+                        while mid_high < high && nums[mid_high] == nums[mid_high + 1] {
+                            mid_high += 1;
+                        }
+                        while mid_high < high && nums[high] == nums[high - 1] {
+                            high -= 1;
+                        }
+                        
+                        mid_high += 1;
+                        high -= 1;
+                    } else if sum < target {
+                        mid_high += 1;
+                    } else {
+                        high -= 1;
+                    }
+                }
+            }
+        }
+        solutions
+    }
+}

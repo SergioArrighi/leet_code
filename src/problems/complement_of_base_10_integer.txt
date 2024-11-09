@@ -1,0 +1,7 @@
+impl Solution {
+    pub fn bitwise_complement(n: i32) -> i32 {
+        let shift = n.leading_zeros();
+        if shift == 32 { return 1; }
+        !n << shift >> shift
+    }
+}

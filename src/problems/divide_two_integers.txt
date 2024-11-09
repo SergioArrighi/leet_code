@@ -1,0 +1,81 @@
+impl Solution {
+    // Binary division
+    // Determine the sign of the quotient => Can be done at the end but signs need to be stored at the beginning
+    // Convert both to binary strings
+    // Get the first n MSB of the dividend
+    // Where n is the length of the divisor binary string
+    pub fn divide(mut dividend: i32, mut divisor: i32) -> i32 {
+        let (sign_dividend, sign_divisor) = (dividend.signum(), divisor.signum());
+        let (dividend, divisor) = ((dividend as i64).abs(), (divisor as i64).abs());
+
+        if divisor > dividend {
+            return 0;
+        }
+        
+        let mut b_dividend = format!("{:b}", dividend);
+        let b_divisor = format!("{:b}", divisor);
+        let mut b_quotient = String::new();
+        let mut b_msb = String::new();
+
+        for b in b_dividend.chars() {
+            b_msb.push(b);
+            let mut msb = i64::from_str_radix(&b_msb, 2).unwrap();
+            
+            if msb >= divisor {
+                b_quotient.push('1');
+                msb = msb - divisor;
+                b_msb = format!("{:b}", msb);
+            } else {
+                b_quotient.push('0');
+            }
+        }
+
+        let quotient = i64::from_str_radix(&b_quotient, 2).unwrap();
+        match (sign_dividend, sign_divisor) {
+            (1, 1) | (-1, -1) => {
+                if (quotient >= i32::MAX as i64) {
+                    return i32::MAX;
+                }
+                return quotient as i32;
+            },
+            (1, -1) | (-1, 1) => {
+                if (quotient <= i32::MIN as i64) {
+                    return i32::MIN;
+                }
+                return -quotient as i32;
+            },
+            (0, 0) | (0, _) => return 0,
+            (_, 0) => panic!("Zero division"),
+            (_, _) => unreachable!("Impossible"),
+        }
+        
+        unreachable!("You should not be here!");
+        
+    }
+}
+
+impl Solution {
+    pub fn divide(mut dividend: i32, mut divisor: i32) -> i32 {
+        let positive = (dividend > 0) == (divisor > 0);
+        let mut dd_ds = ((dividend as i64).abs(), (divisor as i64).abs());
+        let mut ds_length = 0;
+        let mut q = 0;
+
+        while dd_ds.1 >> ds_length != 0 {
+            ds_length +=1;
+        }
+
+        for i in (0..=32 - ds_length).rev() {
+            if dd_ds.1 << i <= dd_ds.0 {
+                q += 1 << i;
+                dd_ds.0 -= dd_ds.1 << i;
+            }
+        }
+
+        if positive {
+            q.min(i32::MAX as i64) as i32
+        } else {
+            (-q).max(i32::MIN as i64) as i32
+        }
+    }
+}

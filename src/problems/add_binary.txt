@@ -1,0 +1,35 @@
+impl Solution {
+    pub fn add_binary(mut a: String, mut b: String) -> String {
+        let mut result = String::new();
+        let pad = std::iter::repeat('0').take(((a.len() - b.len()) as i32 ).abs() as usize).collect::<String>();
+
+        if (a.len() > b.len()) {
+            b = pad + &b;
+        } else {
+            a = pad + &a;
+        }
+
+        let mut carry = false;
+        for (c_a, c_b) in a.chars().rev().zip(b.chars().rev()) {
+            match (c_a, c_b, carry) {
+                ('0', '0', false) => result.push('0'),
+                ('1', '0', false) | ('0', '1', false) => result.push('1'),
+                ('1', '1', false) => {
+                    result.push('0');
+                    carry = true;
+                },
+                ('0', '0', true) => {
+                    result.push('1');
+                    carry = false;
+                },
+                ('1', '0', true) | ('0', '1', true) => result.push('0'),
+                ('1', '1', true) => result.push('1'),
+                (_, _, _) => panic!("Error"),
+            }
+        }
+
+        if carry { result.push('1') }
+
+        result.chars().rev().collect()
+    }
+}

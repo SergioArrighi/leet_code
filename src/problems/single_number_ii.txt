@@ -1,0 +1,14 @@
+impl Solution {
+    pub fn single_number(mut nums: Vec<i32>) -> i32 {
+        let mut bit_counts = vec![0; 33];
+        
+        for n in &nums {
+            for i in 0..32 {
+                bit_counts[i] += (n >> i) & 1;
+            }
+        }
+
+        bit_counts = bit_counts.iter().map(|x| x % 3).collect();
+        bit_counts.iter().rev().fold(0, |acc, &bit| (acc << 1) | bit) as i32
+    }
+}
