@@ -1,0 +1,26 @@
+impl Solution {
+    pub fn single_number(nums: Vec<i32>) -> Vec<i32> {
+        let mut diff = 0;
+        
+        // XOR all numbers to get the XOR of the two unique numbers
+        for &n in &nums {
+            diff ^= n;
+        }
+
+        // Find any bit that is set in `diff` (indicating a difference between the two unique numbers)
+        let diff_bit = diff & -diff; // Isolate the rightmost set bit
+        
+        let mut res = vec![0, 0];
+        
+        // Split the numbers into two groups based on the isolated bit and XOR within each group
+        for &n in &nums {
+            if n & diff_bit == 0 {
+                res[0] ^= n;
+            } else {
+                res[1] ^= n;
+            }
+        }
+        
+        res
+    }
+}

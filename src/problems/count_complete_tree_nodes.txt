@@ -1,0 +1,66 @@
+// Definition for a binary tree node.
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct TreeNode {
+//   pub val: i32,
+//   pub left: Option<Rc<RefCell<TreeNode>>>,
+//   pub right: Option<Rc<RefCell<TreeNode>>>,
+// }
+// 
+// impl TreeNode {
+//   #[inline]
+//   pub fn new(val: i32) -> Self {
+//     TreeNode {
+//       val,
+//       left: None,
+//       right: None
+//     }
+//   }
+// }
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    pub fn count_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        if root.is_none() {
+            return 0;
+        }
+        let mut max_depth = 0;
+        let mut last_leaves = 0;
+        
+        fn rec(head: &Option<Rc<RefCell<TreeNode>>>, max_depth: &mut i32, last_leaves: &mut i32, curr_depth: i32) {
+            if let Some(node) = head {
+                let mut node = node.borrow_mut();
+                match (node.left.take(), node.right.take()) {
+                    (Some(left), Some(right)) => {
+
+                        rec(&Some(left), max_depth, last_leaves, curr_depth + 1);
+                        rec(&Some(right), max_depth, last_leaves, curr_depth + 1);
+                        
+                    },
+                    (Some(left), None) => {
+                        //last node with children
+                        *last_leaves = *last_leaves + 1;
+                        if curr_depth >= *max_depth {
+                            *max_depth += curr_depth + 1;
+                        }
+                        return;
+                    },
+                    (None, None) => {
+                        if curr_depth >= *max_depth {
+                            *max_depth = curr_depth;
+                            *last_leaves = *last_leaves + 1;
+                        }
+                    }
+                    (None, Some(right)) => panic!("Tree not complete"),
+                }
+            }
+        }
+
+        rec(&root, &mut max_depth, &mut last_leaves, 0);
+
+        if last_leaves > 0 {
+            return 2_i32.pow(max_depth as u32) - 1 + last_leaves;
+        } else {
+            return 2_i32.pow(max_depth as u32 + 1) - 1;
+        }
+    }
+}

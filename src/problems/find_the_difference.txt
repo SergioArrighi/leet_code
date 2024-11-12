@@ -1,0 +1,16 @@
+impl Solution {
+    pub fn find_the_difference(s: String, t: String) -> char {
+        fn bit_mask(s: &String) -> u32 {
+            s.bytes().fold(0_u32, |acc, x| acc ^ 1 << (x - b'a'))
+        }
+        let s_bm = bit_mask(&s);
+        let t_bm = bit_mask(&t);
+
+        let diff = s_bm ^ t_bm;
+        if diff == 0 {
+            s.chars().nth(0).unwrap()
+        } else {
+            (b'a' + diff.trailing_zeros() as u8) as char
+        }
+    }
+}

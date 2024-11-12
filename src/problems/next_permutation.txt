@@ -38,44 +38,4 @@ impl Solution {
             None => panic!("Cannot find min"),
         } 
     }
-}impl Solution {
-    pub fn next_permutation(mut nums: &mut Vec<i32>) {
-        // If the list is less than two elements nothing to do
-        if nums.len() < 2 {
-            return;
-        }
-
-        // Find the breaking point as the index of the first number smaller than
-        // the next one. It represent the smallest number that can be swapped
-        // to increase the total value.
-        let mut break_point = nums.len() - 2;
-        while break_point > 0 && nums[break_point] >= nums[break_point + 1] {
-            break_point -= 1;
-        }
-
-        // If it doesn't exist or the first element is greater or equal to the second it means
-        // than nums is in its highest permutation possible.
-        // Reverse it to find the smallest permutation possible and close the loop.
-        if break_point == 0 && nums[0] >= nums[1] {
-            nums.reverse();
-            return;
-        }
-
-        // Find the minimum value in the sub-array from breaking point to the end.
-        // By swapping it with the element at breaking point, the minimum increment is assured.
-        match &nums[break_point + 1..].iter().min() {
-            Some(min) => {
-                // Find the index of the minimum
-                let min_index = nums.iter().rposition(|x| x > &nums[break_point]).unwrap();
-                // Swap breaking point with minimum
-                nums.swap(break_point, min_index);
-                // As breaking point is the first smaller number from right to left, the numbers after it
-                // are organized to give maximum value. By reversing them, we get the minimum factor
-                // after the breaking point.
-                let (_, after) = nums.split_at_mut(break_point + 1);
-                after.reverse();
-            },
-            None => panic!("Cannot find min"),
-        } 
-    }
 }

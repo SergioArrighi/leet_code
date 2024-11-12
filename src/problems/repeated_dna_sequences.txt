@@ -1,0 +1,13 @@
+impl Solution {
+    pub fn find_repeated_dna_sequences(s: String) -> Vec<String> {
+        use std::collections::HashSet;
+        let mut glossary: HashSet<&[u8]> = HashSet::new();
+        let mut solutions: HashSet<&[u8]> = HashSet::new();
+        for sw in s.as_bytes().windows(10) {
+            if !glossary.insert(sw) {
+                solutions.insert(sw);
+            }
+        }
+        solutions.iter().map(|x| String::from_utf8_lossy(&x).to_string()).collect()
+    }
+}

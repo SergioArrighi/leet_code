@@ -1,0 +1,13 @@
+impl Solution {
+    pub fn count_bits(n: i32) -> Vec<i32> {
+        let mut ans = vec![0; n as usize + 1];
+        
+        for i in 0..=n {
+            for j in 0..32 {
+                let bit_j = i >> j & 1;
+                ans[i as usize] += bit_j;
+            }
+        }
+        ans
+    }
+}

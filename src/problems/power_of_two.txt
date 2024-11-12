@@ -1,0 +1,26 @@
+impl Solution {
+    pub fn is_power_of_two(n: i32) -> bool {
+        if n < 0 {
+            return false
+        } else {
+            let mut found = false;
+            let mut res = false;
+            for i in (0..31).rev() {
+                let bit_i = n >> i & 1;
+                match bit_i {
+                    1 => {
+                        if !found {
+                            res = true;
+                            found = true;
+                        } else {
+                            res = false;
+                            break;
+                        }
+                    },
+                    _ => (),
+                }
+            }
+            res
+        }
+    }
+}   

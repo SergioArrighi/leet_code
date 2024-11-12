@@ -1,0 +1,36 @@
+impl Solution {
+    pub fn find_order(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> Vec<i32> {
+        use std::collections::VecDeque;
+        let mut indegrees = vec![0; num_courses as usize];
+        let mut node_edges = vec![vec![]; num_courses as usize];
+        let mut res = Vec::new();
+
+        for p in prerequisites {
+            indegrees[p[1] as usize] += 1;
+            node_edges[p[0] as usize].push(p[1] as usize);
+        }
+
+        let mut queue = VecDeque::new();
+        for i in 0..indegrees.len() {
+            if indegrees[i] == 0 {
+                queue.push_back(i);
+            }
+        }
+
+        while let Some(node) = queue.pop_front() {
+            res.push(node as i32);
+            for n in node_edges[node].iter() {
+                indegrees[*n as usize] -= 1;
+                if indegrees[*n as usize] == 0 {
+                    queue.push_back(*n);
+                }
+            }
+        }
+        if res.len() == num_courses as usize {
+            res.reverse();
+            res
+        } else {
+            Vec::new()
+        }
+    }
+}

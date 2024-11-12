@@ -1,0 +1,26 @@
+impl Solution {
+    pub fn is_power_of_four(mut n: i32) -> bool {
+        if n <= 0 {
+            false
+        } else {
+            let mut single_bit = false;
+            for i in 0..32 {
+                let bit_i = n >> i & 1;
+                if bit_i == 1 {
+                    if !single_bit {
+                        single_bit = true;
+                    } else {
+                        return false;
+                    }
+                }   
+            }
+            for i in 0..16 {
+                let shifted_n = n >> 2 * i;
+                if shifted_n == 1 {
+                    return true;
+                }
+            }
+            false
+        }
+    }
+}

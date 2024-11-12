@@ -1,0 +1,19 @@
+impl Solution {
+    pub fn max_product(words: Vec<String>) -> i32 {
+        let bit_masks = words
+            .iter()
+            .map(
+                |w| w.as_bytes().iter().fold(0_u32, |acc, c| acc | 1 << (c - b'a'))
+            ).collect::<Vec<_>>();
+        
+        let mut res = 0;
+        for i in 0..words.len() - 1 {
+            for j in i + 1..words.len() {
+                if bit_masks[i] & bit_masks[j] == 0 {
+                    res = res.max(words[i].len() * words[j].len());
+                }
+            }
+        }
+        res as i32
+    }
+}

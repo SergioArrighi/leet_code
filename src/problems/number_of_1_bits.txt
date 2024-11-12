@@ -1,0 +1,12 @@
+impl Solution {
+    pub fn hamming_weight(n: i32) -> i32 {
+        let mut result: i32 = 0;
+        for i in 0..32 {
+            let bit = n >> i & 1;
+            if bit == 1 {
+                result += 1;
+            }
+        }
+        result
+    }
+}

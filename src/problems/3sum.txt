@@ -1,26 +1,56 @@
 impl Solution {
-    pub fn three_sum_closest(mut nums: Vec<i32>, target: i32) -> i32 {
-        let mut result = i32::MAX;
-        let mut dist = i32::MAX;
+    /*
+        Triplet contains different elements
+        There can be duplicates
+        One loop and two pointers
+        If current sum < 0// Triplet contains different elements
+        There can be duplicates
+        Sort the input collection
+        One loop and two pointers
+        If current sum is less or equal 0 then increase low by 1
+        else if cum is greater than zero decrease right by 1
+        When sum equals zero add triplet to unique key datastructure
+        Terminate when low meets high
+    */
+    pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
+        //use std::collections::HashSet;
+        //let mut triplets: HashSet<Vec<i32>> = HashSet::new();
+        let mut triplets = Vec::new();
+        //let mut mid: usize = 0;
+        //let mut high: usize = nums.len();
+        //let mut sum = 0;
         nums.sort();
 
         for low in 0..nums.len() - 2 {
-            let (mut mid, mut high): (usize, usize) = (low + 1, nums.len() - 1);
 
-            while (mid < high) {
+            if low > 0 && nums[low] == nums[low - 1] {
+                continue;
+            }
+            let (mut mid, mut high) = (low + 1, nums.len() - 1);
+            while mid < high {
                 let sum = nums[low] + nums[mid] + nums[high];
-                let sum_dist = (sum - target).abs();
-                if sum_dist < dist {
-                    dist = (sum - target).abs();
-                    result = sum;
-                }
-                if (sum < target) { 
+                if  sum == 0 {
+                    // Add triplet
+                    triplets.push(vec![nums[low], nums[mid], nums[high]]);
+                    // Increment mid
+                    while mid < high && nums[mid] == nums[mid + 1] {
+                        mid += 1;
+                    }
+
+                    while mid < high && nums[high - 1] == nums[high] {
+                        high -= 1;
+                    } 
+                    mid += 1;
+                    high -= 1;
+                } else if sum < 0 {
+                    // Increment mid
                     mid += 1;
                 } else {
+                    // Decrement high
                     high -= 1;
                 }
             }
         }
-        result
+        triplets
     }
 }

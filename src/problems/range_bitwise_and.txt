@@ -1,0 +1,15 @@
+impl Solution {
+    pub fn range_bitwise_and(left: i32, right: i32) -> i32 {
+        let mut res = 0;
+        for i in (0..32).rev() {
+            let l_bit = left >> i & 1;
+            let r_bit = right >> i & 1;
+            if l_bit == r_bit {
+                res += l_bit << i;
+            } else {
+                break;
+            }
+        }
+        res
+    }
+}
