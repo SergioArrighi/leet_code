@@ -1,0 +1,50 @@
+impl Solution {
+    pub fn possible_bipartition(n: i32, dislikes: Vec<Vec<i32>>) -> bool {
+        use std::collections::VecDeque;
+
+        let n = n as usize;
+        // If -1 not visited
+        // 0 or 1 represent the two groups
+        // Cannot assign 0 if one and vice-versa
+        // dislike is 1-indexed
+        let mut groups = vec![-1; n];
+
+        // Initialize graph
+        let mut graph: Vec<Vec<usize>> = vec![vec![]; n];
+        for i in 0..dislikes.len() {
+            // Rebase to 0-index
+            let (src, trg) = (dislikes[i][0] as usize - 1, dislikes[i][1] as usize - 1);
+            graph[src].push(trg);
+            // Dislike is a reflexive relationship
+            graph[trg].push(src);
+        }
+
+        // As graph can be disconnected, need to scan every node
+        for i in 0..n {
+            // Only if the node has not been assigned yet
+            if groups[i] == -1 {
+                // Create queue and add first node
+                let mut queue = VecDeque::new();
+                queue.push_back(i);
+                // Assign group to first node
+                groups[i] = 0;
+
+                // DFS traversal
+                while let Some(node) = queue.pop_front() {
+                    let curr_group = groups[node];
+                    
+                    for &nb in &graph[node] {
+                        if groups[nb] == -1 {
+                            groups[nb] = 1 ^ curr_group;
+                            queue.push_back(nb);
+                        } else if groups[nb] == curr_group {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        true
+    }
+}

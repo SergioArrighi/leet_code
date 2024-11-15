@@ -1,0 +1,43 @@
+impl Solution {
+    pub fn loud_and_rich(richer: Vec<Vec<i32>>, quiet: Vec<i32>) -> Vec<i32> {
+        use std::collections::VecDeque;
+
+        let n = quiet.len();
+        let mut graph = vec![vec![]; n];
+        let mut indegree = vec![0; n];
+        let mut res = (0..n as i32).collect::<Vec<i32>>();
+
+        // Build the graph and compute indegrees
+        for pair in richer {
+            let (rich, poor) = (pair[0] as usize, pair[1] as usize);
+            graph[rich].push(poor);
+            indegree[poor] += 1;
+        }
+
+        // Perform topological sort using a queue
+        let mut queue = VecDeque::new();
+        for i in 0..n {
+            if indegree[i] == 0 {
+                queue.push_back(i);
+            }
+        }
+
+        // Process nodes in topological order
+        while let Some(node) = queue.pop_front() {
+            for &neighbor in &graph[node] {
+                // Update the result for the neighbor if the current node is quieter
+                if quiet[res[neighbor] as usize] > quiet[res[node] as usize] {
+                    res[neighbor] = res[node];
+                }
+
+                // Decrease indegree and add to queue if it becomes 0
+                indegree[neighbor] -= 1;
+                if indegree[neighbor] == 0 {
+                    queue.push_back(neighbor);
+                }
+            }
+        }
+
+        res
+    }
+}

@@ -1,0 +1,66 @@
+use std::collections::{HashMap, HashSet};
+
+impl Solution {
+    pub fn calc_equation(
+        equations: Vec<Vec<String>>, 
+        values: Vec<f64>, 
+        queries: Vec<Vec<String>>
+    ) -> Vec<f64> {
+        // Step 1: Build a weighted graph
+        let mut graph: HashMap<String, Vec<(String, f64)>> = HashMap::new();
+        for (i, eq) in equations.iter().enumerate() {
+            let (a, b) = (eq[0].clone(), eq[1].clone());
+            let weight = values[i];
+            graph.entry(a.clone()).or_default().push((b.clone(), weight));
+            graph.entry(b.clone()).or_default().push((a.clone(), 1.0 / weight));
+        }
+
+        // Step 2: Resolve queries
+        queries.iter().map(|q| {
+            let (start, end) = (q[0].clone(), q[1].clone());
+
+            // If either variable does not exist in the graph, return -1.0
+            if !graph.contains_key(&start) || !graph.contains_key(&end) {
+                return -1.0;
+            }
+
+            // If the start and end are the same, the result is 1.0 if it exists in the graph
+            if start == end {
+                return 1.0;
+            }
+
+            // Perform DFS to find a path from start to end
+            let mut visited = HashSet::new();
+            if let Some(result) = Self::dfs(&graph, &start, &end, 1.0, &mut visited) {
+                result
+            } else {
+                -1.0
+            }
+        }).collect()
+    }
+
+    // DFS function to find the product of weights along the path
+    fn dfs(
+        graph: &HashMap<String, Vec<(String, f64)>>,
+        current: &String,
+        target: &String,
+        acc_product: f64,
+        visited: &mut HashSet<String>,
+    ) -> Option<f64> {
+        // Mark the current node as visited
+        visited.insert(current.clone());
+
+        // Check neighbors for a path to the target
+        for (neighbor, weight) in graph.get(current)? {
+            if neighbor == target {
+                return Some(acc_product * weight);
+            }
+            if !visited.contains(neighbor) {
+                if let Some(result) = Self::dfs(graph, neighbor, target, acc_product * weight, visited) {
+                    return Some(result);
+                }
+            }
+        }
+        None
+    }
+}

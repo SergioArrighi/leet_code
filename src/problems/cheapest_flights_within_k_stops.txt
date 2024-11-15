@@ -1,0 +1,49 @@
+use std::collections::{HashMap, BinaryHeap, VecDeque};
+use std::cmp::Reverse;
+
+// Dijkstra's algorythm without min/max heap
+// Different criteria for solution selection
+impl Solution {
+    pub fn find_cheapest_price(n: i32, flights: Vec<Vec<i32>>, src: i32, dst: i32, k: i32) -> i32 {
+        let mut graph: HashMap<i32, Vec<(i32, i32)>> = HashMap::new();
+
+        for flight in flights {
+            graph.entry(flight[0]).or_insert_with(Vec::new).push((flight[1], flight[2]));
+        }
+
+        // Use a simple queue when there is no need to minimize/maximize costs
+        // In this case the focus is on respecting the limit on the stops
+        // which might result in a more expensive solution
+        let mut queue = VecDeque::new();
+        queue.push_back((0, src, 0));
+
+        // Src -> cost, stops
+        let mut min_costs: HashMap<i32, (i32, i32)> = HashMap::new();
+        min_costs.insert(src, (0, 0));
+
+        while let Some((curr_cost, city, stops)) = queue.pop_front() {
+            if stops > k {
+                continue;
+            }
+
+            if let Some(nbs) = graph.get(&city) {
+                for &(nb, cost) in nbs {
+                    let next_cost = curr_cost + cost;
+                    let next_stops = stops + 1;
+
+                    // If a cheaper solution is found, replace the existing one
+                    if next_cost < (*min_costs.get(&nb).unwrap_or(&(i32::MAX, i32::MAX))).0 {
+                        min_costs.insert(nb, (next_cost, next_stops));
+                        queue.push_back((next_cost, nb, next_stops));
+                    }
+                }
+            }
+        }
+
+        if let Some(&(min_costs, _)) = min_costs.get(&dst) {
+            min_costs
+        } else {
+            -1
+        }
+    }
+}

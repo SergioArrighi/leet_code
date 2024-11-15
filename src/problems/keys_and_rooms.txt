@@ -1,0 +1,26 @@
+impl Solution {
+    pub fn can_visit_all_rooms(rooms: Vec<Vec<i32>>) -> bool {
+        use std::collections::{HashSet, VecDeque};
+
+        let n = rooms.len();
+        let mut visited = HashSet::new();
+        let mut queue = VecDeque::new();
+
+        // Start from room 0
+        visited.insert(0);
+        queue.push_back(0);
+
+        // Perform BFS
+        while let Some(room) = queue.pop_front() {
+            for &key in &rooms[room] {
+                if !visited.contains(&(key as usize)) {
+                    visited.insert(key as usize);
+                    queue.push_back(key as usize);
+                }
+            }
+        }
+
+        // Check if all rooms were visited
+        visited.len() == n
+    }
+}

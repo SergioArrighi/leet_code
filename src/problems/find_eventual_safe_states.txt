@@ -1,0 +1,36 @@
+impl Solution {
+    pub fn eventual_safe_nodes(graph: Vec<Vec<i32>>) -> Vec<i32> {
+        use std::collections::VecDeque;
+        let mut rev_graph: Vec<Vec<i32>> = vec![vec![]; graph.len()];
+        let mut outdegree: Vec<i32> = vec![0; graph.len()];
+
+        for i in 0..graph.len() {
+            for &n in graph[i].iter() {
+                rev_graph[n as usize].push(i as i32);
+                outdegree[i] += 1;
+            }
+        }
+
+        let mut queue = VecDeque::new();
+        for i in 0..graph.len() {
+            if outdegree[i] == 0 {
+                queue.push_back(i as i32);
+            }
+        }
+
+        let mut safe_nodes = vec![false; graph.len()];
+        while let Some(node) = queue.pop_front() {
+            safe_nodes[node as usize] = true;
+
+            for &n in rev_graph[node as usize].iter() {
+                outdegree[n as usize] -= 1;
+                if  outdegree[n as usize] == 0 {
+                    queue.push_back(n);
+                }
+            }
+        }
+
+        let mut result: Vec<i32> = (0..graph.len()).filter(|&x| safe_nodes[x]).map(|x| x as i32).collect();
+        result
+    }
+}

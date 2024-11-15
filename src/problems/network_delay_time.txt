@@ -1,0 +1,38 @@
+use std::collections::{BinaryHeap, HashMap};
+use std::cmp::Reverse;
+
+// Dijkstra's algorithm
+impl Solution {
+    pub fn network_delay_time(times: Vec<Vec<i32>>, n: i32, k: i32) -> i32 {
+        let mut graph: HashMap<i32, Vec<(i32, i32)>> = HashMap::new();
+        for time in times {
+            graph.entry(time[0]).or_insert_with(Vec::new).push((time[1], time[2]));
+        }
+
+        let mut heap = BinaryHeap::new();
+        heap.push((Reverse(0), k));
+
+        let mut shortest_times = HashMap::new();
+
+        while let Some((Reverse(curr_time), node)) = heap.pop() {
+            if shortest_times.contains_key(&node) {
+                continue;
+            }
+
+            shortest_times.insert(node, curr_time);
+
+            if let Some(nbs) = graph.get(&node) {
+                for &(nb, time) in nbs {
+                    if !shortest_times.contains_key(&nb) {
+                        heap.push((Reverse(curr_time + time), nb));
+                    }
+                }
+            }
+        }
+        if shortest_times.len() == n as usize {
+            *shortest_times.values().max().unwrap()
+        } else {
+            -1
+        }
+    }
+}

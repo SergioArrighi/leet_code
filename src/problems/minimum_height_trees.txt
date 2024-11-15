@@ -1,0 +1,33 @@
+impl Solution {
+    pub fn find_min_height_trees(n: i32, edges: Vec<Vec<i32>>) -> Vec<i32> {
+        if n == 1 {
+            return vec![0];
+        }
+        use std::collections::HashMap;
+        let mut node_edges: HashMap<usize, Vec<usize>> = HashMap::new();
+
+        for e in edges {
+            let (e0, e1) = (e[0] as usize, e[1] as usize);
+            node_edges.entry(e0).or_insert(Vec::new()).push(e1);
+            node_edges.entry(e1).or_insert(Vec::new()).push(e0);
+        }
+
+        while node_edges.len() > 2 {
+            let to_remove = node_edges
+                    .iter()
+                    .filter(|(_, v)| v.len() == 1)
+                    .map(|(k, v)| (*k, v.clone()))
+                    .collect::<Vec<_>>();
+            to_remove.iter().for_each(|(k, v)| {
+                for node in v.iter() {
+                    if let Some(nodes) = node_edges.get_mut(node) {
+                        nodes.retain(|&x| x != *k);
+                    }
+                }
+                node_edges.remove(&k);
+            });
+        }
+
+        node_edges.into_keys().map(|x| x as i32).collect::<Vec<i32>>()
+    }
+}

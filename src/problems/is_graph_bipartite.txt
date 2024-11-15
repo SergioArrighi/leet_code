@@ -1,0 +1,28 @@
+impl Solution {
+    pub fn is_bipartite(graph: Vec<Vec<i32>>) -> bool {
+        use std::collections::VecDeque;
+        let mut colors = vec![-1; graph.len()];
+        let mut queue = VecDeque::new();
+
+        for i in 0..graph.len() {
+            if colors[i] != -1 {
+                continue;
+            }
+            queue.push_back(i);
+            colors[i] = 0;
+
+            while let Some(node) = queue.pop_front() {
+                for &n in &graph[node] {
+                    let n = n as usize;
+                    if colors[n] == -1 {
+                        colors[n] = colors[node] ^ 1;
+                        queue.push_back(n);
+                    } else if colors[n] == colors[node] {
+                        return false;
+                    }
+                }
+            }
+        }
+        true
+    }
+}
