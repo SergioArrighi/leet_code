@@ -1,0 +1,66 @@
+impl Solution {
+    pub fn equations_possible(equations: Vec<String>) -> bool {
+        struct UnionFind {
+            parent: Vec<usize>,
+            rank: Vec<usize>,
+        }
+
+        impl UnionFind {
+            fn new(size: usize) -> Self {
+                let parent = (0..size).collect();
+                let rank = vec![0; size];
+                UnionFind { parent, rank }
+            }
+
+            fn find(&mut self, x: usize) -> usize {
+                if self.parent[x] != x {
+                    self.parent[x] = self.find(self.parent[x]); // Path compression
+                }
+                self.parent[x]
+            }
+
+            fn union(&mut self, x: usize, y: usize) {
+                let root_x = self.find(x);
+                let root_y = self.find(y);
+
+                if root_x != root_y {
+                    // Union by rank
+                    if self.rank[root_x] > self.rank[root_y] {
+                        self.parent[root_y] = root_x;
+                    } else if self.rank[root_x] < self.rank[root_y] {
+                        self.parent[root_x] = root_y;
+                    } else {
+                        self.parent[root_y] = root_x;
+                        self.rank[root_x] += 1;
+                    }
+                }
+            }
+        }
+
+        let mut uf = UnionFind::new(26); // Only 26 lowercase English letters
+
+        // Step 1: Process `==` equations
+        for eq in &equations {
+            let bytes = eq.as_bytes();
+            let x = (bytes[0] - b'a') as usize;
+            let y = (bytes[3] - b'a') as usize;
+            if bytes[1] == b'=' { // If it's a `==` relation
+                uf.union(x, y);
+            }
+        }
+
+        // Step 2: Check `!=` equations
+        for eq in &equations {
+            let bytes = eq.as_bytes();
+            let x = (bytes[0] - b'a') as usize;
+            let y = (bytes[3] - b'a') as usize;
+            if bytes[1] == b'!' { // If it's a `!=` relation
+                if uf.find(x) == uf.find(y) { // If they belong to the same set
+                    return false;
+                }
+            }
+        }
+
+        true
+    }
+}

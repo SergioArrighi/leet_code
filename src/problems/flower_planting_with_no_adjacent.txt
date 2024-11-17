@@ -1,0 +1,37 @@
+impl Solution {
+    pub fn garden_no_adj(n: i32, paths: Vec<Vec<i32>>) -> Vec<i32> {
+        let n = n as usize;
+        let mut flower_types = vec![0; n]; // Initialize flower types (0 = no flower)
+        let mut graph: Vec<Vec<usize>> = vec![vec![]; n];
+
+        // Build the graph (undirected)
+        for path in paths {
+            let (src, dst) = (path[0] as usize - 1, path[1] as usize - 1);
+            graph[src].push(dst);
+            graph[dst].push(src); // Add both directions
+        }
+
+        // Assign flower types
+        for garden in 0..n {
+            let mut used = [false; 5]; // Track flower types used by neighbors
+
+            // Mark flower types used by neighbors
+            for &neighbor in &graph[garden] {
+                let flower = flower_types[neighbor];
+                if flower > 0 {
+                    used[flower as usize] = true;
+                }
+            }
+
+            // Assign the smallest unused flower type to the current garden
+            for flower in 1..=4 {
+                if !used[flower] {
+                    flower_types[garden] = flower;
+                    break;
+                }
+            }
+        }
+
+        flower_types.into_iter().map(|x| x as i32).collect()
+    }
+}

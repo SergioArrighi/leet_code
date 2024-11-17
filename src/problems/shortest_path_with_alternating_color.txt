@@ -1,0 +1,62 @@
+
+use std::collections::{VecDeque, HashSet};
+
+impl Solution {
+    pub fn shortest_alternating_paths(n: i32, red_edges: Vec<Vec<i32>>, blue_edges: Vec<Vec<i32>>) -> Vec<i32> {
+        let n = n as usize;
+        let mut graph = vec![vec![]; n];
+        let mut res = vec![-1; n];
+
+        // Build the graph
+        // false = red, true = blue
+        for red_edge in red_edges {
+            graph[red_edge[0] as usize].push((red_edge[1], false));
+        }
+        for blue_edge in blue_edges {
+            graph[blue_edge[0] as usize].push((blue_edge[1], true));
+        }
+
+        // Visited states (node x color)
+        let mut visited = vec![vec![false; 2]; n];
+
+        // BFS queue: (node, length, last_edge_is_blue)
+        let mut queue = VecDeque::new();
+        queue.push_back((0, 0, None)); // Start with node 0, distance 0, no last edge
+
+        while let Some((node, length, last_edge_is_blue)) = queue.pop_front() {
+            if res[node] == -1 {
+                res[node] = length;
+            }
+
+            for &(next_node, is_blue) in &graph[node] {
+                let color_index = if is_blue { 1 } else { 0 };
+
+                if !visited[next_node as usize][color_index] {
+                    match last_edge_is_blue {
+                        None => {
+                            // First node, both edge types are valid
+                            visited[next_node as usize][color_index] = true;
+                            queue.push_back((next_node as usize, length + 1, Some(is_blue)));
+                        }
+                        Some(true) => {
+                            // Last edge was blue, only consider red edges
+                            if !is_blue {
+                                visited[next_node as usize][color_index] = true;
+                                queue.push_back((next_node as usize, length + 1, Some(false)));
+                            }
+                        }
+                        Some(false) => {
+                            // Last edge was red, only consider blue edges
+                            if is_blue {
+                                visited[next_node as usize][color_index] = true;
+                                queue.push_back((next_node as usize, length + 1, Some(true)));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        res
+    }
+}

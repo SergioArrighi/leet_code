@@ -1,0 +1,50 @@
+use std::collections::{BinaryHeap, HashSet};
+use std::cmp::Reverse;
+
+// Dijkstra's algorythm
+impl Solution {
+    pub fn find_the_city(n: i32, edges: Vec<Vec<i32>>, distance_threshold: i32) -> i32 {
+        let n = n as usize;
+        let mut graph: Vec<Vec<(usize, i32)>> = vec![vec![]; n];
+
+        for edge in edges {
+            graph[edge[0] as usize].push((edge[1] as usize, edge[2]));
+            graph[edge[1] as usize].push((edge[0] as usize, edge[2]));
+        }
+
+        let mut cities_reach = vec![0; n];
+
+        for i in 0..n {
+            let mut min_dist = vec![i32::MAX; n];
+            let mut heap = BinaryHeap::new();
+
+            min_dist[i] = 0;
+            heap.push((Reverse(0), i)); // (distance, node)
+
+            while let Some((Reverse(curr_dist), curr_node)) = heap.pop() {
+                if curr_dist > distance_threshold {
+                    break; // Early exit if current distance exceeds the threshold
+                }
+
+                for &(nb, weight) in &graph[curr_node] {
+                    let new_dist = curr_dist + weight;
+                    if new_dist < min_dist[nb] {
+                        min_dist[nb] = new_dist;
+                        heap.push((Reverse(new_dist), nb));
+                    }
+                }
+            }
+
+            // Count reachable cities
+            cities_reach[i] = min_dist.iter().filter(|&&d| d <= distance_threshold).count() as i32 - 1;
+        }
+
+        // Find the city with the smallest number of reachable cities (tie-breaking by larger index)
+        (0..n)
+            .zip(cities_reach.iter())
+            .rev()
+            .min_by_key(|&(_, &count)| count)
+            .map(|(i, _)| i)
+            .unwrap() as i32
+    }
+}
