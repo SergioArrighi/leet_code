@@ -1,0 +1,31 @@
+/* The knows API is defined for you.
+       knows(a: i32, b: i32)->bool;
+    to call it use self.knows(a,b)
+*/
+
+impl Solution {
+    pub fn find_celebrity(&self, n: i32) -> i32 {
+        let n = n as usize;
+        let mut h1 = 0;
+        let mut h2 = n - 1;
+
+        while h1 < h2 {
+            if self.knows(h1 as i32, h2 as i32) {
+                h1 += 1;
+            } else {
+                h2 -= 1;
+            }
+        }
+
+        for i in (0..n).filter(|&x| x != h1) {
+            if self.knows(h1 as i32, i as i32) {
+                return -1;
+            }
+            if !self.knows(i as i32, h1 as i32) {
+                return -1;
+            }
+        }
+
+        h1 as i32
+    }
+}

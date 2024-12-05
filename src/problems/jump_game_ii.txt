@@ -1,0 +1,31 @@
+impl Solution {
+    pub fn jump(nums: Vec<i32>) -> i32 {
+        if nums.len() <= 1 {
+            return 0;
+        }
+
+        let mut index = 0;
+        let mut moves = 0;
+
+        while index < nums.len() - 1 {
+            let right = (index + nums[index] as usize).min(nums.len() - 1);
+
+            if right >= nums.len() - 1 {
+                moves += 1;
+                break;
+            }
+
+            let (next_index, _) = nums[index + 1..=right]
+                .iter()
+                .enumerate()
+                .map(|(i, &val)| (index + 1 + i, index + 1 + i + val as usize))
+                .max_by_key(|&(_, reach)| reach)
+                .unwrap();
+
+            index = next_index;
+            moves += 1;
+        }
+
+        moves
+    }
+}

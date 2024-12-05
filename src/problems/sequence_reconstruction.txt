@@ -1,0 +1,44 @@
+use std::collections::{HashMap, VecDeque};
+
+impl Solution {
+    pub fn sequence_reconstruction(nums: Vec<i32>, sequences: Vec<Vec<i32>>) -> bool {
+        let mut graph: HashMap<i32, Vec<i32>> = HashMap::new();
+        let mut indegrees: Vec<i32> = vec![0; nums.len() + 1];
+
+        for seq in sequences {
+            for pair in seq.windows(2) {
+                let (src, dst) = (pair[0], pair[1]);
+                graph.entry(src).or_insert_with(Vec::new).push(dst);
+                indegrees[dst as usize] += 1;
+            }
+        }
+
+        let mut queue = VecDeque::new();
+        for i in 1..=nums.len() {
+            if indegrees[i] == 0 {
+                queue.push_back(i as i32);
+            }
+        }
+
+        let mut topo = Vec::new();
+
+        while let Some(num) = queue.pop_front() {
+            topo.push(num);
+
+            if queue.len() > 0 {
+                return false;
+            }
+
+            if let Some(nbs) = graph.get(&num) {
+                for &nb in nbs {
+                    indegrees[nb as usize] -= 1;
+                    if indegrees[nb as usize] == 0 {
+                        queue.push_back(nb);
+                    }
+                }
+            }
+        }
+
+        topo == nums
+    }
+}

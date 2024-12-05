@@ -1,0 +1,94 @@
+// Khan's algo
+// Topological sort + matrix propagation
+impl Solution {
+    pub fn check_if_prerequisite(num_courses: i32, prerequisites: Vec<Vec<i32>>, queries: Vec<Vec<i32>>) -> Vec<bool> {
+        let n = num_courses as usize;
+
+        // Build the graph
+        let mut graph = vec![vec![]; n];
+        let mut indegree = vec![0; n];
+        for prereq in prerequisites {
+            let (src, dst) = (prereq[0] as usize, prereq[1] as usize);
+            graph[src].push(dst);
+            indegree[dst] += 1;
+        }
+
+        // Perform topological sort
+        let mut topo_order = Vec::new();
+        let mut queue = std::collections::VecDeque::new();
+
+        for i in 0..n {
+            if indegree[i] == 0 {
+                queue.push_back(i);
+            }
+        }
+
+        while let Some(node) = queue.pop_front() {
+            topo_order.push(node);
+            for &nb in &graph[node] {
+                indegree[nb] -= 1;
+                if indegree[nb] == 0 {
+                    queue.push_back(nb);
+                }
+            }
+        }
+
+        // Initialize reachability matrix
+        let mut reachable = vec![vec![false; n]; n];
+
+        // Process nodes in topological order
+        for node in &topo_order {
+            for &nb in &graph[*node] {
+                // Node can reach its neighbor
+                reachable[*node][nb] = true;
+
+                // Propagate reachability information
+                for i in 0..n {
+                    if reachable[i][*node] {
+                        reachable[i][nb] = true;
+                    }
+                }
+            }
+        }
+
+        // Answer queries using the reachability matrix
+        queries
+            .iter()
+            .map(|query| reachable[query[0] as usize][query[1] as usize])
+            .collect()
+    }
+}
+
+// Floyd-Warshall algo
+impl Solution {
+    pub fn check_if_prerequisite(num_courses: i32, prerequisites: Vec<Vec<i32>>, queries: Vec<Vec<i32>>) -> Vec<bool> {
+        let n = num_courses as usize;
+
+        // Initialize the reachability matrix
+        let mut reachable = vec![vec![false; n]; n];
+
+        // Set direct prerequisites as reachable
+        for prereq in prerequisites {
+            let (src, dst) = (prereq[0] as usize, prereq[1] as usize);
+            reachable[src][dst] = true;
+        }
+
+        // Floyd-Warshall algorithm for transitive closure
+        for k in 0..n {
+            for i in 0..n {
+                for j in 0..n {
+                    if reachable[i][k] && reachable[k][j] {
+                        reachable[i][j] = true;
+                    }
+                }
+            }
+        }
+
+        // Answer the queries
+        queries
+            .iter()
+            .map(|query| reachable[query[0] as usize][query[1] as usize])
+            .collect()
+    }
+}
+

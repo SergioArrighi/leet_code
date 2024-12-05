@@ -1,0 +1,15 @@
+impl Solution {
+    pub fn max_number_of_apples(mut weight: Vec<i32>) -> i32 {
+        weight.sort();
+        let mut curr_weight = 0_i32;
+
+        for (i, w) in weight.iter().enumerate() {
+            if curr_weight + w > 5000 {
+                return i as i32;
+            }
+            curr_weight += w;
+        }
+
+        weight.len() as i32
+    }
+}

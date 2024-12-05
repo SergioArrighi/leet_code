@@ -1,0 +1,25 @@
+impl Solution {
+    pub fn largest_sum_after_k_negations(mut nums: Vec<i32>, mut k: i32) -> i32 {
+         // Sort to group negatives at the start and positives at the end
+        nums.sort();
+
+        // Flip negatives while `k` > 0
+        for i in 0..nums.len() {
+            if nums[i] < 0 && k > 0 {
+                nums[i] = -nums[i];
+                k -= 1;
+            }
+        }
+
+        // If `k` is still odd, flip the smallest absolute value
+        if k % 2 == 1 {
+            // Sort again to find the smallest value
+            nums.sort();
+            // Flip the smallest value
+            nums[0] = -nums[0];
+        }
+
+        // Return the sum of the array
+        nums.iter().sum()
+    }
+}

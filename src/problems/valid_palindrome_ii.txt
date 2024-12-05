@@ -1,0 +1,35 @@
+impl Solution {
+    pub fn valid_palindrome(s: String) -> bool {
+        let chars: Vec<char> = s.chars().collect();
+        let (mut left, mut right) = (0, chars.len() - 1);
+
+        while left < right {
+            if chars[left] != chars[right] {
+                // If there's a mismatch, check both possibilities:
+                // 1. Remove the character at `left`.
+                // 2. Remove the character at `right`.
+                return Self::is_palindrome(&chars, left + 1, right) 
+                    || Self::is_palindrome(&chars, left, right - 1);
+            }
+            left += 1;
+            right -= 1;
+        }
+
+        true
+    }
+
+    // Helper function to check if a substring is a palindrome
+    fn is_palindrome(chars: &[char], left: usize, right: usize) -> bool {
+        let mut l = left;
+        let mut r = right;
+
+        while l < r {
+            if chars[l] != chars[r] {
+                return false;
+            }
+            l += 1;
+            r -= 1;
+        }
+        true
+    }
+}

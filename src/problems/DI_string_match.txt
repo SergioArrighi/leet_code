@@ -1,0 +1,29 @@
+impl Solution {
+    pub fn di_string_match(s: String) -> Vec<i32> {
+        let mut result: Vec<i32> = Vec::new();
+        let mut low: i32 = 0;
+        let mut high: i32 = s.len() as i32;
+
+        for c in s.chars() {
+            match c {
+                'I' => {
+                    result.push(low);
+                    low += 1;
+                },
+                'D' => {
+                    result.push(high);
+                    high -= 1;
+                },
+                _ => panic!("Invalid character"),
+            }
+        }
+
+        match s.chars().last().unwrap() {
+            'I' => result.push(low),
+            'D' => result.push(high),
+            _ => panic!("Invalid character"),
+        }
+
+        result
+    }
+}

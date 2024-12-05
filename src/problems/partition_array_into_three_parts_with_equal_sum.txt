@@ -1,0 +1,26 @@
+impl Solution {
+    pub fn can_three_parts_equal_sum(arr: Vec<i32>) -> bool {
+        let total_sum: i32 = arr.iter().sum();
+
+        // If the total sum is not divisible by 3, it's impossible to partition
+        if total_sum % 3 != 0 {
+            return false;
+        }
+
+        let partition_sum = total_sum / 3;
+        let mut current_sum = 0;
+        let mut partitions = 0;
+
+        for &num in &arr {
+            current_sum += num;
+            // If we find a partition, reset the sum and count it
+            if current_sum == partition_sum {
+                partitions += 1;
+                current_sum = 0;
+            }
+        }
+
+        // If there are more than three partitions, one can be absorbed by the other
+        partitions >= 3
+    }
+}

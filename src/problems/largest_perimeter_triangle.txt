@@ -1,0 +1,16 @@
+impl Solution {
+    pub fn largest_perimeter(mut nums: Vec<i32>) -> i32 {
+        // Sort in ascending order
+        nums.sort_unstable();
+
+        // Start from the largest elements
+        for i in (2..nums.len()).rev() {
+            let (a, b, c) = (nums[i - 2], nums[i - 1], nums[i]);
+            if a + b > c {
+                return a + b + c; // Return the largest valid perimeter
+            }
+        }
+
+        0 // No valid triangle found
+    }
+}

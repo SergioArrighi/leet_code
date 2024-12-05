@@ -1,0 +1,35 @@
+impl Solution {
+    pub fn min_reorder(n: i32, connections: Vec<Vec<i32>>) -> i32 {
+        // Graph keeps track of directions
+        // bool is_outgoing
+        let n = n as usize;
+        let mut graph: Vec<Vec<(i32, bool)>> = vec![vec![]; n];
+        let mut reversed = 0_i32;
+        let mut visited = vec![false; n];
+
+        for connection in connections {
+            let (src, dst) = (connection[0], connection[1]);
+            graph[src as usize].push((dst, true));
+            graph[dst as usize].push((src, false));
+        }
+
+        let mut queue = std::collections::VecDeque::new();
+        queue.push_back(0_i32);
+        visited[0] = true;
+
+        while let Some(node) = queue.pop_front() {
+            for &(nb, is_out) in &graph[node as usize] {
+                if !visited[nb as usize] {
+                    if is_out {
+                        reversed += 1;
+                    }
+                
+                    visited[nb as usize] = true;
+                    queue.push_back(nb);
+                }
+            }
+        }
+
+        reversed
+    }
+}

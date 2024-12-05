@@ -1,0 +1,62 @@
+use std::collections::BinaryHeap;
+
+// Wrapper for f64 to implement custom ordering
+#[derive(PartialEq, PartialOrd)]
+struct OrderedF64(f64);
+
+impl Eq for OrderedF64 {}
+
+impl Ord for OrderedF64 {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.partial_cmp(other).unwrap()
+    }
+}
+
+impl Solution {
+    pub fn max_probability(
+        n: i32,
+        edges: Vec<Vec<i32>>,
+        succ_prob: Vec<f64>,
+        start_node: i32,
+        end_node: i32,
+    ) -> f64 {
+        let n = n as usize;
+        let mut graph: Vec<Vec<(i32, f64)>> = vec![vec![]; n];
+
+        // Build the graph
+        for (i, edge) in edges.iter().enumerate() {
+            let (src, dst) = (edge[0], edge[1]);
+            graph[src as usize].push((dst, succ_prob[i]));
+            graph[dst as usize].push((src, succ_prob[i]));
+        }
+
+        // Use a max-heap
+        let mut heap = BinaryHeap::new();
+        heap.push((OrderedF64(1.0), start_node));
+
+        // Track maximum probability to each node
+        let mut max_prob = vec![0.0; n];
+        max_prob[start_node as usize] = 1.0;
+
+        while let Some((OrderedF64(curr_prob), curr_node)) = heap.pop() {
+            // If we reach the end node, return the probability
+            if curr_node == end_node {
+                return curr_prob;
+            }
+
+            if curr_prob < max_prob[curr_node as usize] {
+                continue;
+            }
+
+            for &(nb, prob) in &graph[curr_node as usize] {
+                let new_prob = curr_prob * prob;
+                if new_prob > max_prob[nb as usize] {
+                    max_prob[nb as usize] = new_prob;
+                    heap.push((OrderedF64(new_prob), nb));
+                }
+            }
+        }
+
+        0.0 // If end_node is unreachable
+    }
+}
